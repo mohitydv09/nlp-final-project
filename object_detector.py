@@ -4,7 +4,6 @@ class ObjectDetector:
         raise NotImplementedError
     
 if __name__ == "__main__":
-<<<<<<< HEAD
     pass
 
 
@@ -53,7 +52,7 @@ rgb_frame = np.array(first_frame)
 print("Image shape:", rgb_frame.shape)
 
 # Load the pre-trained YOLOv8 model
-model = YOLO('./models/yolov8s.pt')
+model = YOLO('./models/yolov8n.pt')
 
 # Get class names from the model
 class_names = model.names
@@ -89,6 +88,3 @@ for result in results:
 cv2.imshow('YOLO Object Detection', rgb_frame)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-=======
-    pass
->>>>>>> parent of 1fbe153 (models and first implementation of object detector - not working yet)
