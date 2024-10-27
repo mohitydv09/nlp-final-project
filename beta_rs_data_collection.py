@@ -45,6 +45,8 @@ cv2.destroyAllWindows()
 ## Remove the empty frames
 data = data[:i,:,:,:]
 
+""" This is causing issues with data extraction, as it needs pyrealsense2
+Next time extract the values and store them as non pyrealsense2 objects. """
 intrinsics_dict = {
     "width": intrinsics.width,
     "height": intrinsics.height,
