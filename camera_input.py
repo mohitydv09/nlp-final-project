@@ -1,6 +1,6 @@
 import numpy as np
 
-class CamearInput:
+class cameraInput:
     def __init__(self, from_prestored = True)-> None:
         if from_prestored:
             self.data = self.load_data('data/data.npy')
@@ -23,12 +23,23 @@ class CamearInput:
                 frame = camera_input.get_rgb_frame()
                 yolo_result = yolo_model.detect(frame)
             """
-        frame = self.frames[self.idx,:,:,:3]/255
+        frame = self.frames[self.idx,:,:,:3]
+        self.idx = (self.idx + 1) % self.num_frames
+        return frame
+    
+    def get_frame(self):
+        """Generator that yields RGB frames each time it is called.
+            Example usage:
+            while i_want_to_detect_objects:
+                frame = camera_input.get_rgb_frame()
+                yolo_result = yolo_model.detect(frame)
+            """
+        frame = self.frames[self.idx,:,:,:]
         self.idx = (self.idx + 1) % self.num_frames
         return frame
 
 if __name__ == "__main__":
-    camera_input = CamearInput()  # Create an instance of the CameraInput class
+    camera_input = cameraInput()  # Create an instance of the CameraInput class
     for i in range(500):
         frame = camera_input.get_rgb_frame()
         print(frame[0,0,0])
