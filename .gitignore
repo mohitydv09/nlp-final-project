@@ -3,3 +3,6 @@ data/data.npy
 models/yolo11n.pt
 models
 data
+__pycache__/
+yolo11n.pt
+.gitignore
