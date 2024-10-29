@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import cv2
 
 from ultralytics import YOLO
 
@@ -7,7 +8,7 @@ from camera_input import cameraInput
 
 class objectDetector:
     def __init__(self, model_name='yolo11n.pt', model_folder='./models')->None:
-        self.model = self.load_model(model_name='yolo11n.pt', model_folder='./models')
+        self.model = self.load_model(model_name=model_name, model_folder=model_folder)
 
     def load_model(self, model_name='yolo11n.pt', model_folder='./models')->YOLO:
         os.makedirs(model_folder, exist_ok=True)
@@ -16,8 +17,8 @@ class objectDetector:
         if not os.path.exists(model_path):
             try:
                 print(f"Model {model_name} not found in {model_folder}. Downloading...")
-                model = YOLO(model_name)  # Download model by name
-                model.save(model_path)  # Save the model to the specified path
+                model = YOLO(model_name)
+                model.save(model_path)
                 print("Model download complete.")
             except Exception as e:
                 print(f"Error downloading model: {e}")
@@ -65,8 +66,7 @@ class objectDetector:
             if len(random_depths) > 0:
                 depth_values.append(np.median(random_depths))
             else:
-                print("This is a bug, do something about this.")
-                depth_values.append(0)
+                depth_values.append(0) ## Change to zero maybe?
         return depth_values
     
     def pixel2world(self, 
@@ -89,7 +89,7 @@ class objectDetector:
             # Convert to world coordinates
             x_world = z * x_ndc
             y_world = z * y_ndc
-            world_coordinates.append((int(x_world), int(y_world), int(z)))
+            world_coordinates.append((round(x_world, 1), round(y_world, 1), round(z, 1)))
         return world_coordinates
     
     def get_objects_with_location(self,
@@ -99,23 +99,30 @@ class objectDetector:
         """Get objects with their 3D locations."""
         labels, bboxes = self.detect_objects(rgb_image)
         depth_values = self.get_depth_data(depth_image, bboxes)
-
-        pixel_coordinates = [((bbox[0]+bbox[2])//2 , (bbox[1]+bbox[3])//2) for bbox in bboxes] 
+        pixel_coordinates = [(int((bbox[0] + bbox[2])/2*rgb_image.shape[1]), int((bbox[1] + bbox[3])/2*rgb_image.shape[0])) for bbox in bboxes]
         world_coordinates = self.pixel2world(pixel_coordinates, depth_values, 
                                               intrinsics['ppx'], intrinsics['ppy'], 
                                               intrinsics['fx'], intrinsics['fy'])
         return labels, pixel_coordinates, world_coordinates
         
+
 if __name__ == "__main__":
-    object_detector = objectDetector()  # Create an instance of the ObjectDetector class
-    camera_input = cameraInput()  # Create an instance of the CameraInput class
+    object_detector = objectDetector()
+    camera_input = cameraInput()
     intrinsics_dict = camera_input.intrinsics
     depth_scale = camera_input.image_details["depth_scale"]
-    for i in range(5):
+    for i in range(2000):
         frame = camera_input.get_frame()
         rgb_frame = frame[:,:,:3].astype(np.uint8)
         depth_frame = frame[:,:,3] * depth_scale
 
         labels, pixel_coordinates, world_coordinates = object_detector.get_objects_with_location(rgb_frame, depth_frame, intrinsics_dict)
-        print("Labels:", labels)
-        print("World Coordinates:", world_coordinates)  # Print the world coordinates of detected objects
+        for label, (x,y), (X,Y,Z) in zip(labels, pixel_coordinates, world_coordinates):
+            cv2.putText(rgb_frame, label, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            cv2.putText(rgb_frame, f"({X}, {Y}, {Z})", (int(x), int(y+20)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.circle(rgb_frame, (int(x), int(y)), 5, (0, 0, 255), -1)
+        cv2.imshow("RGB Image", rgb_frame)
+
+        if cv2.waitKey(20) & 0xFF == ord('q'):
+            break
+    cv2.destroyAllWindows()
