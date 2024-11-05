@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-data_dict = np.load('data/data.npy', allow_pickle=True).item()
+data_dict = np.load('data/lab_walking.npy', allow_pickle=True).item()
 
 print(data_dict.keys()) 
 

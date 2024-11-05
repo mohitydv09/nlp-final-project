@@ -10,7 +10,7 @@ config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 
 path = "data/"
 
-data = np.empty((2000, 480, 640, 4), dtype=np.uint16)
+data = np.empty((4000, 480, 640, 4), dtype=np.uint16)
 
 pipeline.start(config)
 
@@ -45,8 +45,6 @@ cv2.destroyAllWindows()
 ## Remove the empty frames
 data = data[:i,:,:,:]
 
-""" This is causing issues with data extraction, as it needs pyrealsense2
-Next time extract the values and store them as non pyrealsense2 objects. """
 intrinsics_dict = {
     "width": intrinsics.width,
     "height": intrinsics.height,
@@ -54,7 +52,6 @@ intrinsics_dict = {
     "ppy": intrinsics.ppy,
     "fx": intrinsics.fx,
     "fy": intrinsics.fy,
-    "model": intrinsics.model,
     "coeffs": intrinsics.coeffs
 }
 
@@ -69,4 +66,4 @@ image_details = {
 ## Save the intrinsics matrix with data in a dictionary.
 data_dict = {"data": data, "intrinsics": intrinsics_dict, "image_details": image_details}
 
-np.save(path + "data.npy", data_dict)
+np.save(path + "lab_walking.npy", data_dict)
