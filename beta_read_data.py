@@ -1,23 +1,26 @@
 import cv2
 import numpy as np
 
-data_dict = np.load('data/lab_walking.npy', allow_pickle=True).item()
+data_dict = np.load('data/empty_hallway.npz', allow_pickle=True)
 
-print(data_dict.keys()) 
-
-first_frame = data_dict["data"][100,:,:,:3]/255
-depth_frame = data_dict["data"][0,:,:,3]
-
-print("Shape of data: ", data_dict["data"].shape)
-
-print(np.max(first_frame))
-print(np.min(first_frame))
-
-print(np.max(depth_frame))
-print(np.min(depth_frame))
-print(np.median(depth_frame))
+print("Keys in data dictionary: ", data_dict.files)
 
 
-cv2.imshow("frame", first_frame)
+## Use this to extrac the data from the dictionary
+color_frames = data_dict['color_frames']
+depth_frames = data_dict['depth_frames']
+intrinsics = data_dict['intrinsics'].item()
+image_details = data_dict['image_details'].item()
+
+
+##Example of how to use the data
+print("Intinsics: ", intrinsics)
+print("Image details: ", image_details)
+print("Color frames shape: ", color_frames.shape)
+print("Depth frames shape: ", depth_frames.shape)
+
+## Display the first frame
+cv2.imshow("frame", color_frames[0,:,:])
+cv2.imshow("depth", depth_frames[0])
 cv2.waitKey(0)
 cv2.destroyAllWindows()

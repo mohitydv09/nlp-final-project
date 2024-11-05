@@ -10,7 +10,8 @@ config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 
 path = "data/"
 
-data = np.empty((4000, 480, 640, 4), dtype=np.uint16)
+color_data = np.empty((4000, 480, 640, 3), dtype=np.uint8)
+depth_data = np.empty((4000, 480, 640), dtype=np.uint16)
 
 pipeline.start(config)
 
@@ -28,11 +29,11 @@ while True:
     if i == 5:
         intrinsics = depth_frame.profile.as_video_stream_profile().intrinsics
 
-    data[i,:,:,:3] = np.asanyarray(color_frame.get_data())
-    data[i,:,:,3] = np.asanyarray(depth_frame.get_data())
+    color_data[i,:,:,:] = np.asanyarray(color_frame.get_data())
+    depth_data[i,:,:] = np.asanyarray(depth_frame.get_data())
 
-    cv2.imshow("frame", data[i,:,:,:3])
-    cv2.imshow("depth", data[i,:,:,3])
+    cv2.imshow("frame", color_data[i,:,:,:])
+    cv2.imshow("depth", depth_data[i,:,:])
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -43,7 +44,8 @@ pipeline.stop()
 cv2.destroyAllWindows()
 
 ## Remove the empty frames
-data = data[:i,:,:,:]
+color_data = color_data[:i,:,:,:]
+depth_data = depth_data[:i,:,:]
 
 intrinsics_dict = {
     "width": intrinsics.width,
@@ -64,6 +66,9 @@ image_details = {
 }
 
 ## Save the intrinsics matrix with data in a dictionary.
-data_dict = {"data": data, "intrinsics": intrinsics_dict, "image_details": image_details}
+data_dict = {"color_frames": color_data, 
+             "depth_frames": depth_data,
+              "intrinsics": intrinsics_dict, 
+              "image_details": image_details}
 
-np.save(path + "lab_walking.npy", data_dict)
+np.savez_compressed(path + "data.npz", **data_dict)
