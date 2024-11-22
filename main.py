@@ -2,7 +2,7 @@ import cv2
 
 from camera_input import cameraInput
 from object_detector import objectDetector
-from LLM import LLM
+from llm import LLM
 from realsense_camera import RSCamera
 
 
