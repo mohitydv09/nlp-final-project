@@ -31,5 +31,8 @@ if __name__ == "__main__":
     system_message = "You are an Indian person. Reply back in Hinglish."
     user_message = "Hey, how are you doing today?"
 
-    response = llm.generate_response(system_message=system_message, user_message=user_message)
+    response = llm.generate_response(
+        system_message=system_message,
+        user_message=user_message
+    )
     print("ChatGPT-3.5 Response: ",response)
