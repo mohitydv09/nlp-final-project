@@ -5,16 +5,35 @@ from object_detector import objectDetector
 
 from collections import deque
 
-def data_json(data: deque): ## Fix Bug.
-    data = list(data)
-    data_dict = {}
-    for i,(labels, _, world_coordinates) in enumerate(data):
-        for j,(label, _, world_coordinate) in enumerate(zip(labels, _, world_coordinates)):
-            data_dict[i] = {f"object_{j}": {"label": label, "world_coordinate": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"}}
-    print(data_dict)
+# def data_json(data: deque): ## Fix Bug.
+#     data = list(data)
+#     data_dict = {}
+#     for i,(labels, _, world_coordinates) in enumerate(data):
+#         for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
+#             data_dict[f"Time Stamp: {len(data_dict)-i-1}"][f"Object {j}"] = {"Label: ": label, "Location: ": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"}
+#     print(data_dict)
+
+yolo_output = []
+
+def data_json(data: deque):
+    data_list = list(data)  # Convert deque to list
+    data_dict = {}  # Initialize the dictionary
+
+    for i, (labels, _, world_coordinates) in enumerate(data_list):
+        timestamp_key = f"Time Stamp: {i + 1 - len(data_list)}"  # Create the timestamp key
+        data_dict[timestamp_key] = {}  # Ensure the timestamp key exists
+
+        for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
+            data_dict[timestamp_key][f"Object {j}"] = {
+                "Label": label,
+                "Location": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"
+            }
+    
+    yolo_output.append(data_dict)
 
 
-## Implement as tread
+
+## Implement as thread
 def update_deque(camera: RealSenseCamera, object_detector: objectDetector, data: deque):
     """Will update the deque with the new data""" 
     start_time = time.time()
@@ -40,14 +59,6 @@ def update_deque(camera: RealSenseCamera, object_detector: objectDetector, data:
 
     cv2.waitKey(1)
 
-def get_json_data(data: deque):
-    # data = list(data)
-    # data_dict = {}
-    # for i,(labels, _, world_coordinates) in enumerate(data):
-    #     for j,(label, _, world_coordinate) in enumerate(zip(labels, _, world_coordinates)):
-    #         data_dict[i] = {f"object_{j}": {"label": label, "world_coordinate": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"}}    
-    # return data_dict
-
 def main():
     """Will Import all the classes and functions from the other files and run the program"""
     ## Start the camera
@@ -65,6 +76,10 @@ def main():
             print("Length of Data: ",len(data))
             time.sleep(0.01)
     except KeyboardInterrupt:
+        import json
+
+        with open("data_new.json", "w") as f:
+            json.dump(yolo_output, f)
         cv2.destroyAllWindows()
         camera.stop()
 
