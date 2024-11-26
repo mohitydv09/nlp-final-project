@@ -44,5 +44,4 @@ if __name__ == "__main__":
     camera_input = cameraInput()  # Create an instance of the CameraInput class
     for i in range(500):
         frame = camera_input.get_rgb_frame()
-        time.sleep(0.1)
         print(frame[0,0,0])

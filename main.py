@@ -1,27 +1,31 @@
-import cv2
-
-from camera_input import cameraInput
+from camera import RealSenseCamera
 from object_detector import objectDetector
-from llm import LLM
-from realsense_camera import RSCamera
-from langchain_core.tools import tool
 
-@tool
-def scene_description() -> str:
-    """Will get the image from the camera and run the object detection model on it"""
-    image = cameraInput.get_frame() ## Get the image from the camera
-    return vlm.generate_response(user_message=image) ## Run the object detection model on the image
+from collections import deque
+
+def update_deque(camera: RealSenseCamera, object_detector: objectDetector, data: deque):
+    """Will update the deque with the new data"""
+    start_time = time.time()
+
+    ## Get the RGB and Depth frames
+    rgb_frame = camera.get_color_frame()
+    depth_frame = camera.get_depth_frame()
+    intrinsics = camera.intrinsics
 
 
 
 def main():
     """Will Import all the classes and functions from the other files and run the program"""
-    camera_input = cameraInput()  # Create an instance of the CameraInput class
-    object_detector = objectDetector(model_name="yolo11n.pt", model_folder="./models")  # Create an instance of the ObjectDetector class
+    ## Start the camera
+    camera = RealSenseCamera()
+    camera.start()
 
-    ## Get a frame from camera.
-    frame = camera_input.get_rgb_frame()
-    print("Shape of frame: ", frame.shape)
+    object_detector = objectDetector()
+    data = deque(maxlen=30)
+
+    
+
+
 
 if __name__ == "__main__":
     main()

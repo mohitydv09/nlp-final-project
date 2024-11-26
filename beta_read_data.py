@@ -5,7 +5,6 @@ data_dict = np.load('data/empty_hallway.npz', allow_pickle=True)
 
 print("Keys in data dictionary: ", data_dict.files)
 
-
 ## Use this to extrac the data from the dictionary
 color_frames = data_dict['color_frames']
 depth_frames = data_dict['depth_frames']
