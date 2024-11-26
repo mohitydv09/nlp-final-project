@@ -5,13 +5,15 @@ import numpy as np
 import pyrealsense2 as rs
 
 class RealSenseCamera:
-    def __init__(self):
+    def __init__(self, visualization=False):
         self.pipeline = rs.pipeline()
         self.config = rs.config()
         self.config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
         self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-
+        self.visualization = visualization
         self.intrinsics = None  
+        self.depth_scale = None
+
 
         self.color_frame = None
         self.depth_frame = None
@@ -22,6 +24,18 @@ class RealSenseCamera:
         """Start the camera and the thread."""
         self.running = True
         self.pipeline.start(self.config)
+        
+        rs_intrinsics = self.pipeline.get_active_profile().get_stream(rs.stream.color).as_video_stream_profile().get_intrinsics()
+        self.intrinsics = {
+            "width": rs_intrinsics.width,
+            "height": rs_intrinsics.height,
+            "ppx": rs_intrinsics.ppx,
+            "ppy": rs_intrinsics.ppy,
+            "fx": rs_intrinsics.fx,
+            "fy": rs_intrinsics.fy,
+            "coeffs": rs_intrinsics.coeffs
+        }
+        self.depth_scale = self.pipeline.get_active_profile().get_device().first_depth_sensor().get_depth_scale()
         self.thread.start()
 
     def stop(self):
@@ -43,8 +57,9 @@ class RealSenseCamera:
                 self.depth_frame = np.asanyarray(depth_frame.get_data())
 
                 # Show the live feed
-                cv2.imshow("RealSense - Color", self.color_frame)
-                cv2.waitKey(1)
+                if self.visualization:
+                    cv2.imshow("RealSense - Color", self.color_frame)
+                    cv2.waitKey(1)
 
     def get_color_frame(self):
         """Get the current color frame."""
