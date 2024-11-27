@@ -30,7 +30,7 @@ class objectDetector:
 
     def detect_objects(self, 
                        rgb_image:np.ndarray, 
-                       device = 'cuda:0', 
+                       device = 'cpu', # 'cuda:0' or 'cpu'
                        verbose=False, 
                        visualization=False, 
                        save_image=False)->tuple:
