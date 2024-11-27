@@ -22,20 +22,38 @@ def data_json(data: deque):
     data_list = list(data)  # Convert deque to list
     data_dict = {}  # Initialize the dictionary
 
+    # Output Format:
+    # for i, (labels, _, world_coordinates) in enumerate(data_list):
+    #     timestamp_key = f"Time Stamp: {i + 1 - len(data_list)}"  # Create the timestamp key
+    #     data_dict[timestamp_key] = {}  # Ensure the timestamp key exists
+
+    #     for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
+    #         data_dict[timestamp_key][f"Object {j}"] = {
+    #             "Label": label,
+    #             "Location": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"
+    #         }
+
+    string_data = ""
     for i, (labels, _, world_coordinates) in enumerate(data_list):
         timestamp_key = f"Time Stamp: {i + 1 - len(data_list)}"  # Create the timestamp key
-        data_dict[timestamp_key] = {}  # Ensure the timestamp key exists
-
+        
         for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
-            data_dict[timestamp_key][f"Object {j}"] = {
-                "Label": label,
-                "Location": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"
-            }
+            string_data += f"{timestamp_key}, Object {j}: {label}, Location: X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}\n"
+
+        # data_dict[timestamp_key] = {}  # Ensure the timestamp key exists
+
+        # for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
+        #     data_dict[timestamp_key][f"Object {j}"] = {
+        #         "Label": label,
+        #         "Location": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"
+        #     }
+
+    print(string_data)
     
     yolo_output.append(data_dict)
 
     with open("data_new.json", "w") as f:
-        json.dump(data_dict, f, indent=4)
+        json.dump(string_data, f)
 
     return data_dict
 

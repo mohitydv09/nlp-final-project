@@ -1,6 +1,7 @@
 import os 
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
+import time
 
 class LLM():
     def __init__(self, model_name: str = 'gpt-4o-mini', temperature:float=0.5) -> None:
@@ -80,113 +81,16 @@ if __name__ == "__main__":
     """
 
     user_message = """
-        {
-        "Time Stamp: -4": {
-            "Object 0": {
-                "Label": "chair",
-                "Location": "X: -0.0, Y: 0.0, Z: 0"
-            },
-            "Object 1": {
-                "Label": "tv",
-                "Location": "X: 1.5, Y: 0.1, Z: 3.5"
-            },
-            "Object 2": {
-                "Label": "chair",
-                "Location": "X: -1.3, Y: 0.6, Z: 3.2"
-            },
-            "Object 3": {
-                "Label": "clock",
-                "Location": "X: -0.1, Y: -0.2, Z: 0.9"
-            },
-            "Object 4": {
-                "Label": "chair",
-                "Location": "X: -0.3, Y: 0.3, Z: 5.9"
-            },
-            "Object 5": {
-                "Label": "chair",
-                "Location": "X: 0.6, Y: 0.6, Z: 2.6"
-            }
-        },
-        "Time Stamp: -3": {
-            "Object 0": {
-                "Label": "chair",
-                "Location": "X: -0.5, Y: 0.6, Z: 2.4"
-            },
-            "Object 1": {
-                "Label": "chair",
-                "Location": "X: -1.2, Y: 0.6, Z: 2.6"
-            },
-            "Object 2": {
-                "Label": "clock",
-                "Location": "X: -0.1, Y: -0.1, Z: 0.5"
-            },
-            "Object 3": {
-                "Label": "tv",
-                "Location": "X: 0.0, Y: 0.0, Z: 0"
-            },
-            "Object 4": {
-                "Label": "chair",
-                "Location": "X: -0.0, Y: 0.0, Z: 0"
-            },
-            "Object 5": {
-                "Label": "mouse",
-                "Location": "X: 0.8, Y: 0.4, Z: 2.1"
-            }
-        },
-        "Time Stamp: -2": {
-            "Object 0": {
-                "Label": "clock",
-                "Location": "X: -0.0, Y: -0.0, Z: 0"
-            },
-            "Object 1": {
-                "Label": "chair",
-                "Location": "X: -0.5, Y: 0.5, Z: 5.4"
-            },
-            "Object 2": {
-                "Label": "chair",
-                "Location": "X: -1.0, Y: 0.6, Z: 2.1"
-            },
-            "Object 3": {
-                "Label": "chair",
-                "Location": "X: -0.6, Y: 0.5, Z: 1.8"
-            },
-            "Object 4": {
-                "Label": "tv",
-                "Location": "X: 0.0, Y: -0.0, Z: 0"
-            }
-        },
-        "Time Stamp: -1": {
-            "Object 0": {
-                "Label": "chair",
-                "Location": "X: -0.5, Y: 0.8, Z: 4.9"
-            },
-            "Object 1": {
-                "Label": "clock",
-                "Location": "X: -1.6, Y: -1.3, Z: 8.8"
-            },
-            "Object 2": {
-                "Label": "chair",
-                "Location": "X: 0.9, Y: 0.7, Z: 2.0"
-            }
-        },
-        "Time Stamp: 0": {
-            "Object 0": {
-                "Label": "chair",
-                "Location": "X: -0.5, Y: 0.7, Z: 4.3"
-            },
-            "Object 1": {
-                "Label": "clock",
-                "Location": "X: -1.5, Y: -1.5, Z: 7.9"
-            },
-            "Object 2": {
-                "Label": "tv",
-                "Location": "X: 0.0, Y: -0.0, Z: 0"
-            }
-        }
+        Time Stamp: -4, Object 0: chair, Location: X: -0.7, Y: 1.1, Z: 6.9\nTime Stamp: -4, Object 1: clock, Location: X: -1.6, Y: -1.3, Z: 8.7\nTime Stamp: -4, Object 2: chair, Location: X: 0.9, Y: 0.7, Z: 2.0\nTime Stamp: -3, Object 0: chair, Location: X: -0.5, Y: 0.6, Z: 4.3\nTime Stamp: -3, Object 1: clock, Location: X: -1.6, Y: -1.6, Z: 8.2\nTime Stamp: -3, Object 2: tv, Location: X: 0.0, Y: -0.0, Z: 0\nTime Stamp: -2, Object 0: chair, Location: X: -0.3, Y: 0.7, Z: 3.5\nTime Stamp: -2, Object 1: clock, Location: X: -1.1, Y: -1.5, Z: 7.7\nTime Stamp: -2, Object 2: tv, Location: X: 1.1, Y: -0.5, Z: 3.7\nTime Stamp: -1, Object 0: chair, Location: X: -0.1, Y: 0.8, Z: 3.2\nTime Stamp: -1, Object 1: clock, Location: X: -0.6, Y: -1.3, Z: 7.3\nTime Stamp: 0, Object 0: chair, Location: X: -0.1, Y: 0.6, Z: 2.7\nTime Stamp: 0, Object 1: clock, Location: X: -1.0, Y: -1.5, Z: 6.5\nTime Stamp: 0, Object 2: tv, Location: X: 0.0, Y: -0.0, Z: 0\n
     """
+
+    start_time = time.time()
 
     response = llm.generate_response(
         system_message=system_message,
         user_message=user_message
     )
+
+    end_time = time.time()
     print("LLM Response: ",response)
+    print("Time taken: ", end_time-start_time)
