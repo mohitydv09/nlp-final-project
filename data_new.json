@@ -1,1 +1,104 @@
-[{"Time Stamp: 0": {"Object 0": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.3, Y: 0.6, Z: 2.9"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.5, Z: 3.5"}, "Object 3": {"Label": "clock", "Location": "X: -0.1, Y: -0.2, Z: 1.1"}, "Object 4": {"Label": "chair", "Location": "X: 0.7, Y: 0.7, Z: 3.1"}, "Object 5": {"Label": "chair", "Location": "X: 0.8, Y: 0.5, Z: 2.0"}, "Object 6": {"Label": "bottle", "Location": "X: -1.9, Y: 0.2, Z: 4.0"}, "Object 7": {"Label": "chair", "Location": "X: -0.0, Y: 0.0, Z: 0"}}}, {"Time Stamp: -1": {"Object 0": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.3, Y: 0.6, Z: 2.9"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.5, Z: 3.5"}, "Object 3": {"Label": "clock", "Location": "X: -0.1, Y: -0.2, Z: 1.1"}, "Object 4": {"Label": "chair", "Location": "X: 0.7, Y: 0.7, Z: 3.1"}, "Object 5": {"Label": "chair", "Location": "X: 0.8, Y: 0.5, Z: 2.0"}, "Object 6": {"Label": "bottle", "Location": "X: -1.9, Y: 0.2, Z: 4.0"}, "Object 7": {"Label": "chair", "Location": "X: -0.0, Y: 0.0, Z: 0"}}, "Time Stamp: 0": {"Object 0": {"Label": "chair", "Location": "X: -0.4, Y: 0.6, Z: 2.6"}, "Object 1": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 3.1"}, "Object 3": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 4": {"Label": "chair", "Location": "X: -0.1, Y: 0.0, Z: 0.9"}, "Object 5": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}}, {"Time Stamp: -2": {"Object 0": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.3, Y: 0.6, Z: 2.9"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.5, Z: 3.5"}, "Object 3": {"Label": "clock", "Location": "X: -0.1, Y: -0.2, Z: 1.1"}, "Object 4": {"Label": "chair", "Location": "X: 0.7, Y: 0.7, Z: 3.1"}, "Object 5": {"Label": "chair", "Location": "X: 0.8, Y: 0.5, Z: 2.0"}, "Object 6": {"Label": "bottle", "Location": "X: -1.9, Y: 0.2, Z: 4.0"}, "Object 7": {"Label": "chair", "Location": "X: -0.0, Y: 0.0, Z: 0"}}, "Time Stamp: -1": {"Object 0": {"Label": "chair", "Location": "X: -0.4, Y: 0.6, Z: 2.6"}, "Object 1": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 3.1"}, "Object 3": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 4": {"Label": "chair", "Location": "X: -0.1, Y: 0.0, Z: 0.9"}, "Object 5": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}, "Time Stamp: 0": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 2.4"}, "Object 1": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 2.8"}, "Object 2": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 3": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.2"}, "Object 4": {"Label": "chair", "Location": "X: -0.4, Y: 0.3, Z: 5.9"}, "Object 5": {"Label": "mouse", "Location": "X: 0.8, Y: 0.4, Z: 2.1"}}}, {"Time Stamp: -3": {"Object 0": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.3, Y: 0.6, Z: 2.9"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.5, Z: 3.5"}, "Object 3": {"Label": "clock", "Location": "X: -0.1, Y: -0.2, Z: 1.1"}, "Object 4": {"Label": "chair", "Location": "X: 0.7, Y: 0.7, Z: 3.1"}, "Object 5": {"Label": "chair", "Location": "X: 0.8, Y: 0.5, Z: 2.0"}, "Object 6": {"Label": "bottle", "Location": "X: -1.9, Y: 0.2, Z: 4.0"}, "Object 7": {"Label": "chair", "Location": "X: -0.0, Y: 0.0, Z: 0"}}, "Time Stamp: -2": {"Object 0": {"Label": "chair", "Location": "X: -0.4, Y: 0.6, Z: 2.6"}, "Object 1": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 3.1"}, "Object 3": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 4": {"Label": "chair", "Location": "X: -0.1, Y: 0.0, Z: 0.9"}, "Object 5": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}, "Time Stamp: -1": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 2.4"}, "Object 1": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 2.8"}, "Object 2": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 3": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.2"}, "Object 4": {"Label": "chair", "Location": "X: -0.4, Y: 0.3, Z: 5.9"}, "Object 5": {"Label": "mouse", "Location": "X: 0.8, Y: 0.4, Z: 2.1"}}, "Time Stamp: 0": {"Object 0": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 5.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.1, Y: 0.6, Z: 2.1"}, "Object 3": {"Label": "chair", "Location": "X: -0.6, Y: 0.5, Z: 1.8"}, "Object 4": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.3, Y: 0.6, Z: 2.9"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.5, Z: 3.5"}, "Object 3": {"Label": "clock", "Location": "X: -0.1, Y: -0.2, Z: 1.1"}, "Object 4": {"Label": "chair", "Location": "X: 0.7, Y: 0.7, Z: 3.1"}, "Object 5": {"Label": "chair", "Location": "X: 0.8, Y: 0.5, Z: 2.0"}, "Object 6": {"Label": "bottle", "Location": "X: -1.9, Y: 0.2, Z: 4.0"}, "Object 7": {"Label": "chair", "Location": "X: -0.0, Y: 0.0, Z: 0"}}, "Time Stamp: -3": {"Object 0": {"Label": "chair", "Location": "X: -0.4, Y: 0.6, Z: 2.6"}, "Object 1": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 3.1"}, "Object 3": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 4": {"Label": "chair", "Location": "X: -0.1, Y: 0.0, Z: 0.9"}, "Object 5": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}, "Time Stamp: -2": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 2.4"}, "Object 1": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 2.8"}, "Object 2": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 3": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.2"}, "Object 4": {"Label": "chair", "Location": "X: -0.4, Y: 0.3, Z: 5.9"}, "Object 5": {"Label": "mouse", "Location": "X: 0.8, Y: 0.4, Z: 2.1"}}, "Time Stamp: -1": {"Object 0": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 5.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.1, Y: 0.6, Z: 2.1"}, "Object 3": {"Label": "chair", "Location": "X: -0.6, Y: 0.5, Z: 1.8"}, "Object 4": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: 0": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.8, Z: 4.9"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.3, Z: 8.7"}, "Object 2": {"Label": "chair", "Location": "X: 0.5, Y: 0.4, Z: 1.1"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "chair", "Location": "X: -0.4, Y: 0.6, Z: 2.6"}, "Object 1": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 3.1"}, "Object 3": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 4": {"Label": "chair", "Location": "X: -0.1, Y: 0.0, Z: 0.9"}, "Object 5": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}, "Time Stamp: -3": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 2.4"}, "Object 1": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 2.8"}, "Object 2": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 3": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.2"}, "Object 4": {"Label": "chair", "Location": "X: -0.4, Y: 0.3, Z: 5.9"}, "Object 5": {"Label": "mouse", "Location": "X: 0.8, Y: 0.4, Z: 2.1"}}, "Time Stamp: -2": {"Object 0": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 5.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.1, Y: 0.6, Z: 2.1"}, "Object 3": {"Label": "chair", "Location": "X: -0.6, Y: 0.5, Z: 1.8"}, "Object 4": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -1": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.8, Z: 4.9"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.3, Z: 8.7"}, "Object 2": {"Label": "chair", "Location": "X: 0.5, Y: 0.4, Z: 1.1"}}, "Time Stamp: 0": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.7, Z: 4.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.6, Z: 8.1"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 2.4"}, "Object 1": {"Label": "chair", "Location": "X: -1.2, Y: 0.6, Z: 2.8"}, "Object 2": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 3": {"Label": "tv", "Location": "X: 1.5, Y: 0.1, Z: 3.2"}, "Object 4": {"Label": "chair", "Location": "X: -0.4, Y: 0.3, Z: 5.9"}, "Object 5": {"Label": "mouse", "Location": "X: 0.8, Y: 0.4, Z: 2.1"}}, "Time Stamp: -3": {"Object 0": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 5.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.1, Y: 0.6, Z: 2.1"}, "Object 3": {"Label": "chair", "Location": "X: -0.6, Y: 0.5, Z: 1.8"}, "Object 4": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -2": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.8, Z: 4.9"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.3, Z: 8.7"}, "Object 2": {"Label": "chair", "Location": "X: 0.5, Y: 0.4, Z: 1.1"}}, "Time Stamp: -1": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.7, Z: 4.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.6, Z: 8.1"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: 0": {"Object 0": {"Label": "chair", "Location": "X: -0.3, Y: 0.7, Z: 3.6"}, "Object 1": {"Label": "clock", "Location": "X: -1.1, Y: -1.5, Z: 7.7"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "clock", "Location": "X: -0.0, Y: -0.0, Z: 0"}, "Object 1": {"Label": "chair", "Location": "X: -0.5, Y: 0.5, Z: 5.4"}, "Object 2": {"Label": "chair", "Location": "X: -1.1, Y: 0.6, Z: 2.1"}, "Object 3": {"Label": "chair", "Location": "X: -0.6, Y: 0.5, Z: 1.8"}, "Object 4": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -3": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.8, Z: 4.9"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.3, Z: 8.7"}, "Object 2": {"Label": "chair", "Location": "X: 0.5, Y: 0.4, Z: 1.1"}}, "Time Stamp: -2": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.7, Z: 4.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.6, Z: 8.1"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -1": {"Object 0": {"Label": "chair", "Location": "X: -0.3, Y: 0.7, Z: 3.6"}, "Object 1": {"Label": "clock", "Location": "X: -1.1, Y: -1.5, Z: 7.7"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: 0": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.8, Z: 3.2"}, "Object 1": {"Label": "clock", "Location": "X: -0.6, Y: -1.3, Z: 7.2"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.8, Z: 4.9"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.3, Z: 8.7"}, "Object 2": {"Label": "chair", "Location": "X: 0.5, Y: 0.4, Z: 1.1"}}, "Time Stamp: -3": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.7, Z: 4.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.6, Z: 8.1"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -2": {"Object 0": {"Label": "chair", "Location": "X: -0.3, Y: 0.7, Z: 3.6"}, "Object 1": {"Label": "clock", "Location": "X: -1.1, Y: -1.5, Z: 7.7"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -1": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.8, Z: 3.2"}, "Object 1": {"Label": "clock", "Location": "X: -0.6, Y: -1.3, Z: 7.2"}}, "Time Stamp: 0": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.6, Z: 2.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.0, Y: -1.5, Z: 6.6"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "chair", "Location": "X: -0.5, Y: 0.7, Z: 4.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.6, Y: -1.6, Z: 8.1"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -3": {"Object 0": {"Label": "chair", "Location": "X: -0.3, Y: 0.7, Z: 3.6"}, "Object 1": {"Label": "clock", "Location": "X: -1.1, Y: -1.5, Z: 7.7"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -2": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.8, Z: 3.2"}, "Object 1": {"Label": "clock", "Location": "X: -0.6, Y: -1.3, Z: 7.2"}}, "Time Stamp: -1": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.6, Z: 2.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.0, Y: -1.5, Z: 6.6"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: 0": {"Object 0": {"Label": "clock", "Location": "X: 0.1, Y: -1.4, Z: 6.0"}, "Object 1": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 2": {"Label": "chair", "Location": "X: 0.4, Y: 0.5, Z: 2.0"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "chair", "Location": "X: -0.3, Y: 0.7, Z: 3.6"}, "Object 1": {"Label": "clock", "Location": "X: -1.1, Y: -1.5, Z: 7.7"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -3": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.8, Z: 3.2"}, "Object 1": {"Label": "clock", "Location": "X: -0.6, Y: -1.3, Z: 7.2"}}, "Time Stamp: -2": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.6, Z: 2.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.0, Y: -1.5, Z: 6.6"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -1": {"Object 0": {"Label": "clock", "Location": "X: 0.1, Y: -1.4, Z: 6.0"}, "Object 1": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 2": {"Label": "chair", "Location": "X: 0.4, Y: 0.5, Z: 2.0"}}, "Time Stamp: 0": {"Object 0": {"Label": "clock", "Location": "X: 0.5, Y: -1.3, Z: 5.5"}, "Object 1": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.8, Z: 3.2"}, "Object 1": {"Label": "clock", "Location": "X: -0.6, Y: -1.3, Z: 7.2"}}, "Time Stamp: -3": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.6, Z: 2.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.0, Y: -1.5, Z: 6.6"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -2": {"Object 0": {"Label": "clock", "Location": "X: 0.1, Y: -1.4, Z: 6.0"}, "Object 1": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 2": {"Label": "chair", "Location": "X: 0.4, Y: 0.5, Z: 2.0"}}, "Time Stamp: -1": {"Object 0": {"Label": "clock", "Location": "X: 0.5, Y: -1.3, Z: 5.5"}, "Object 1": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}, "Time Stamp: 0": {"Object 0": {"Label": "clock", "Location": "X: 0.5, Y: -1.5, Z: 4.8"}}}, {"Time Stamp: -4": {"Object 0": {"Label": "chair", "Location": "X: -0.1, Y: 0.6, Z: 2.4"}, "Object 1": {"Label": "clock", "Location": "X: -1.0, Y: -1.5, Z: 6.6"}, "Object 2": {"Label": "tv", "Location": "X: 0.0, Y: -0.0, Z: 0"}}, "Time Stamp: -3": {"Object 0": {"Label": "clock", "Location": "X: 0.1, Y: -1.4, Z: 6.0"}, "Object 1": {"Label": "tv", "Location": "X: 0.0, Y: 0.0, Z: 0"}, "Object 2": {"Label": "chair", "Location": "X: 0.4, Y: 0.5, Z: 2.0"}}, "Time Stamp: -2": {"Object 0": {"Label": "clock", "Location": "X: 0.5, Y: -1.3, Z: 5.5"}, "Object 1": {"Label": "chair", "Location": "X: 0.0, Y: 0.0, Z: 0"}}, "Time Stamp: -1": {"Object 0": {"Label": "clock", "Location": "X: 0.5, Y: -1.5, Z: 4.8"}}, "Time Stamp: 0": {"Object 0": {"Label": "clock", "Location": "X: -0.1, Y: -1.3, Z: 4.3"}, "Object 1": {"Label": "chair", "Location": "X: 1.1, Y: 0.4, Z: 2.5"}}}]
+{
+    "Time Stamp: -4": {
+        "Object 0": {
+            "Label": "chair",
+            "Location": "X: -0.0, Y: 0.0, Z: 0"
+        },
+        "Object 1": {
+            "Label": "tv",
+            "Location": "X: 1.5, Y: 0.1, Z: 3.5"
+        },
+        "Object 2": {
+            "Label": "chair",
+            "Location": "X: -1.3, Y: 0.6, Z: 3.2"
+        },
+        "Object 3": {
+            "Label": "clock",
+            "Location": "X: -0.1, Y: -0.2, Z: 0.9"
+        },
+        "Object 4": {
+            "Label": "chair",
+            "Location": "X: -0.3, Y: 0.3, Z: 5.9"
+        },
+        "Object 5": {
+            "Label": "chair",
+            "Location": "X: 0.6, Y: 0.6, Z: 2.6"
+        }
+    },
+    "Time Stamp: -3": {
+        "Object 0": {
+            "Label": "chair",
+            "Location": "X: -0.5, Y: 0.6, Z: 2.4"
+        },
+        "Object 1": {
+            "Label": "chair",
+            "Location": "X: -1.2, Y: 0.6, Z: 2.6"
+        },
+        "Object 2": {
+            "Label": "clock",
+            "Location": "X: -0.1, Y: -0.1, Z: 0.5"
+        },
+        "Object 3": {
+            "Label": "tv",
+            "Location": "X: 0.0, Y: 0.0, Z: 0"
+        },
+        "Object 4": {
+            "Label": "chair",
+            "Location": "X: -0.0, Y: 0.0, Z: 0"
+        },
+        "Object 5": {
+            "Label": "mouse",
+            "Location": "X: 0.8, Y: 0.4, Z: 2.1"
+        }
+    },
+    "Time Stamp: -2": {
+        "Object 0": {
+            "Label": "clock",
+            "Location": "X: -0.0, Y: -0.0, Z: 0"
+        },
+        "Object 1": {
+            "Label": "chair",
+            "Location": "X: -0.5, Y: 0.5, Z: 5.4"
+        },
+        "Object 2": {
+            "Label": "chair",
+            "Location": "X: -1.0, Y: 0.6, Z: 2.1"
+        },
+        "Object 3": {
+            "Label": "chair",
+            "Location": "X: -0.6, Y: 0.5, Z: 1.8"
+        },
+        "Object 4": {
+            "Label": "tv",
+            "Location": "X: 0.0, Y: -0.0, Z: 0"
+        }
+    },
+    "Time Stamp: -1": {
+        "Object 0": {
+            "Label": "chair",
+            "Location": "X: -0.5, Y: 0.8, Z: 4.9"
+        },
+        "Object 1": {
+            "Label": "clock",
+            "Location": "X: -1.6, Y: -1.3, Z: 8.8"
+        },
+        "Object 2": {
+            "Label": "chair",
+            "Location": "X: 0.9, Y: 0.7, Z: 2.0"
+        }
+    },
+    "Time Stamp: 0": {
+        "Object 0": {
+            "Label": "chair",
+            "Location": "X: -0.5, Y: 0.7, Z: 4.3"
+        },
+        "Object 1": {
+            "Label": "clock",
+            "Location": "X: -1.5, Y: -1.5, Z: 7.9"
+        },
+        "Object 2": {
+            "Label": "tv",
+            "Location": "X: 0.0, Y: -0.0, Z: 0"
+        }
+    }
+}

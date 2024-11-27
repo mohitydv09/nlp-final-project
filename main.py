@@ -4,6 +4,9 @@ from camera import RealSenseCamera
 from object_detector import objectDetector
 from camera_input import cameraInput
 from collections import deque
+from llm import LLM
+import json
+
 
 # def data_json(data: deque): ## Fix Bug.
 #     data = list(data)
@@ -30,6 +33,11 @@ def data_json(data: deque):
             }
     
     yolo_output.append(data_dict)
+
+    with open("data_new.json", "w") as f:
+        json.dump(data_dict, f, indent=4)
+
+    return data_dict
 
 
 
@@ -84,6 +92,8 @@ def update_deque_no_cam(camera: RealSenseCamera, object_detector: objectDetector
     data.append((labels, pixel_coordinates, world_coordinates))
     data_json_format = data_json(data)
 
+    print(data_json_format)
+
     time.sleep(max(0, (1 - (time.time() - start_time))))
 
     cv2.waitKey(1)
@@ -102,6 +112,9 @@ def main():
     object_detector = objectDetector()
     data = deque(maxlen=5)
 
+    llm_obj = LLM(model_name='gpt-4o-mini', temperature=0.5)
+
+
     try:
         while True:
             for i in range(20):
@@ -110,10 +123,17 @@ def main():
             print("Length of Data: ",len(data))
             # time.sleep(0.01)
     except KeyboardInterrupt:
-        import json
+        # Now is when we will run the chatGPT command to check the data and if the person was in danger
+        standard_message = "You are an Indian person. Reply back in Hinglish."
 
-        with open("data_new.json", "w") as f:
-            json.dump(yolo_output, f)
+        data_dict = None
+        # read in the data from the json file
+        with open("data_new.json", "r") as f:
+            data_dict = json.load(f)
+
+        llm_obj.generate_response(system_message=standard_message, user_message=str(data_dict))
+
+
         cv2.destroyAllWindows()
         camera.stop()
 
