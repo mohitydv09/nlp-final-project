@@ -14,7 +14,6 @@ class RealSenseCamera:
         self.intrinsics = None  
         self.depth_scale = None
 
-
         self.color_frame = None
         self.depth_frame = None
         self.running = False

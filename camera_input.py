@@ -17,7 +17,7 @@ class cameraInput:
     def load_data(self, data_path:str)-> dict:
         return np.load(data_path, allow_pickle=True)
     
-    def get_rgb_frame(self):
+    def get_color_frame(self):
         """Generator that yields RGB frames each time it is called.
             Example usage:
             while i_want_to_detect_objects:
@@ -28,17 +28,16 @@ class cameraInput:
         self.idx = (self.idx + 1) % self.num_frames
         return color_frame
     
-    def get_rgbd_frame(self):
+    def get_depth_frame(self):
         """Generator that yields RGBD frames each time it is called.
             Example usage:
             while i_want_to_detect_objects:
                 frame = camera_input.get_rgb_frame()
                 yolo_result = yolo_model.detect(frame)
             """
-        color_frame = self.color_frames[self.idx,:,:]
         depth_frame = self.depth_frames[self.idx,:,:]
         self.idx = (self.idx + 1) % self.num_frames
-        return color_frame, depth_frame
+        return depth_frame
 
 if __name__ == "__main__":
     camera_input = cameraInput()  # Create an instance of the CameraInput class

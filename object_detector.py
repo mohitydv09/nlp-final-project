@@ -7,8 +7,9 @@ from ultralytics import YOLO
 from camera_input import cameraInput
 
 class objectDetector:
-    def __init__(self, model_name='yolo11n.pt', model_folder='./models')->None:
+    def __init__(self, model_name='yolo11n.pt', model_folder='./models', device='cpu')->None:
         self.model = self.load_model(model_name=model_name, model_folder=model_folder)
+        self.device = device
 
     def load_model(self, model_name='yolo11n.pt', model_folder='./models')->YOLO:
         os.makedirs(model_folder, exist_ok=True)
@@ -30,7 +31,6 @@ class objectDetector:
 
     def detect_objects(self, 
                        rgb_image:np.ndarray, 
-                       device = 'cpu', # 'cuda:0' or 'cpu'
                        verbose=False, 
                        visualization=False, 
                        save_image=False)->tuple:
@@ -41,7 +41,7 @@ class objectDetector:
                                     verbose=verbose, 
                                     conf = 0.6, 
                                     iou=0.4, 
-                                    device = device, 
+                                    device = self.device, 
                                     half=True)[0]
          ## Result is a list of size as many images are passed, we only will pass one so we need one result.
         class_ids = result.boxes.cls
