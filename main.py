@@ -172,7 +172,7 @@ def main():
 
     ## Initialize the camera and warm it up. 
     ## Keep the visualization off as we will visualize from the update_deque function.
-    working_with_local_data = True
+    working_with_local_data = False
     if working_with_local_data:
         camera = cameraInput(from_prestored=True)
     else:
