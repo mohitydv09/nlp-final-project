@@ -191,6 +191,5 @@ if __name__ == "__main__":
         system_message=system_message,
         user_message=user_message
     )
-    print("Time taken: ", time.time() - start_time)
+
     print("LLM Response: ",response)
-    print("Time taken: ", end_time-start_time)

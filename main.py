@@ -2,6 +2,8 @@ import cv2
 import json
 import time
 import threading
+import numpy as np
+## import inflect
 from collections import deque
 from typing import List, Tuple
 
@@ -10,19 +12,69 @@ from camera import RealSenseCamera
 from camera_input import cameraInput ## For the camera input from stored data.
 from object_detector import objectDetector
 
-def structure_yolo_output(yolo_output_list: List[Tuple]) -> json:
-    """Will structure the yolo output in the required format"""
-    structured_data = {}
-    for i, (labels, world_coordinates) in enumerate(yolo_output_list):
-        timestamp_key = f"Time Stamp: {i + 1 - len(yolo_output_list)}"  # Create the timestamp key
-        structured_data[timestamp_key] = {}  # Ensure the timestamp key exists
+## Global Variables
+THETA_1 = 80
+THETA_2 = 70
+R_1 = 2
+R_2 = 5
+CLOSE_X_CUTOFF = 0.7
 
+def get_polar_coordinates(x:float, z:float) -> Tuple:
+    """Will return the polar coordinates of the object, r in meters and theta in degrees"""
+    r = (x**2 + z**2)**0.5
+    theta = np.arctan2(z, x)
+    return r, np.degrees(theta)
+
+def get_position_label(theta:float, r:float, x:float) -> str:
+    """Will return the position of the object based on the polar coordinates"""
+    ## Setup Cutoffs
+    ### Not considering the Y-axis as it will not be required.
+    if r > R_2:
+        ## Far objects
+        if(theta < THETA_2): #5
+            return"to your right"
+        elif(theta > 180-THETA_2): #1
+            return "to your left"
+        elif(theta > THETA_1): #4
+            return "slightly to your right"
+        elif(theta < 180-THETA_1): #2
+            return "slightly to your left"
+        else: #3
+            return "in front of you"
+    elif r > R_1:
+        ## Medium dist objects
+        if(theta < THETA_2):
+            return "to your right"
+        elif(theta > 180-THETA_2):
+            return "to your left"
+        elif(theta > THETA_1):
+            return "slightly to your right"
+        elif(theta < 180-THETA_1):
+            return "slightly to your left"
+        else:
+            return "in front of you"
+    else:
+        ## Close objects
+        if(x > CLOSE_X_CUTOFF):
+            return "to your right"
+        elif(x < -CLOSE_X_CUTOFF):
+            return "to your left"
+        else:
+            return "right in front of you"
+
+def structure_yolo_output(yolo_output_list: List[Tuple]) -> str:
+    """Will structure the yolo output data in the required format"""
+    output_string = ""
+    for i, (labels, world_coordinates) in enumerate(yolo_output_list):
+        if i == 0:
+            output_string += f"Observation at Current TimeStep:\n"
+        else:
+            output_string += f"Observation {i} second ago:\n"
         for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
-            structured_data[timestamp_key][f"Object {j}"] = {
-                "Label": label,
-                "Location": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"
-            }
-    return structured_data
+            r, theta = get_polar_coordinates(world_coordinate[0], world_coordinate[2])
+            position = get_position_label(theta, r, world_coordinate[0])
+            output_string += f"\t{j}. '{label}' is {position} and {round(r,1)} meters away\n"
+    return output_string
 
 
 def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple]) -> str:
@@ -31,56 +83,28 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple]) -> str:
     ## Cast data as a list.
     yolo_output_list = list(yolo_output_data)
 
-    print(yolo_output_list)
-
     ## Structure the data in the required format.
-    # structured_data = structure_yolo_output(yolo_output_list)
+    structured_data = structure_yolo_output(yolo_output_list)
+    print(structured_data)
 
-    return "Hello"
+    # ## Load the system message from file
+    # with open("utils/nav_system_prompt_1.txt", "r") as f:
+    #     system_message = f.read()
 
+    # ## Create User Message from the structured data
+    # user_message = f"Hello {structured_data}"
 
-def data_json(data: deque):
-    data_list = list(data)  # Convert deque to list
-    data_dict = {}  # Initialize the dictionary
+    # llm_response = llm.generate_response(
+    #     system_message=system_message, 
+    #     user_message=user_message
+    # )
 
-    # Output Format:
-    # for i, (labels, _, world_coordinates) in enumerate(data_list):
-    #     timestamp_key = f"Time Stamp: {i + 1 - len(data_list)}"  # Create the timestamp key
-    #     data_dict[timestamp_key] = {}  # Ensure the timestamp key exists
-
-    #     for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
-    #         data_dict[timestamp_key][f"Object {j}"] = {
-    #             "Label": label,
-    #             "Location": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"
-    #         }
-
-    string_data = ""
-    for i, (labels, _, world_coordinates) in enumerate(data_list):
-        timestamp_key = f"Time Stamp: {i + 1 - len(data_list)}"  # Create the timestamp key
-        
-        for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
-            string_data += f"{timestamp_key}, Object {j}: {label}, Location: X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}\n"
-
-        # data_dict[timestamp_key] = {}  # Ensure the timestamp key exists
-
-        # for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
-        #     data_dict[timestamp_key][f"Object {j}"] = {
-        #         "Label": label,
-        #         "Location": f"X: {world_coordinate[0]}, Y: {world_coordinate[1]}, Z: {world_coordinate[2]}"
-        #     }
-
-    print(string_data)
-    
-    yolo_output.append(data_dict)
-
-    with open("data_new.json", "w") as f:
-        json.dump(string_data, f)
-
-    return data_dict
+    # return llm_response
 
 def update_deque(camera: RealSenseCamera, 
                  object_detector: objectDetector, 
                  yolo_output: deque,
+                 update_frequency: float = 1,
                  visualization: bool = False):
     """Will update the deque with the new data and visualize the data if required""" 
     current_time = time.time()
@@ -102,11 +126,14 @@ def update_deque(camera: RealSenseCamera,
             cv2.imshow("RGB Image", rgb_frame)
             cv2.waitKey(1)
 
+        ## Deque structure
+        # 0th element is latest data, and the last element is the oldest data.
+        # [(labels, world_coordinates), (labels, world_coordinates), (labels, world_coordinates), ...]
+
         ## Add the data to the deque.
-        if(time.time() - current_time >= 1):
-            with deque_lock:
-                yolo_output.append((labels, world_coordinates))
-            print("Len of deque: ", len(yolo_output))
+        if(time.time() - current_time >= update_frequency):
+            with deque_lock: ## Will append to left.
+                yolo_output.appendleft((labels, world_coordinates))
             current_time = time.time()
 
 ## Implement as thread
@@ -145,10 +172,14 @@ def main():
 
     ## Initialize the camera and warm it up. 
     ## Keep the visualization off as we will visualize from the update_deque function.
-    camera = RealSenseCamera(visualization=False)
-    camera.start()
-    while camera.color_frame is None: ## Will be blocking until the camera starts sending frames.
-        continue
+    working_with_local_data = True
+    if working_with_local_data:
+        camera = cameraInput(from_prestored=True)
+    else:
+        camera = RealSenseCamera(visualization=False)
+        camera.start()
+        while camera.color_frame is None: ## Will be blocking until the camera starts sending frames.
+            continue
 
     object_detector = objectDetector(device='cuda:0')
     llm = LLM(model_name='gpt-4o-mini', temperature=0.5)
@@ -159,13 +190,16 @@ def main():
 
     ## Update the deque with the new data
     data_update_thread = threading.Thread(target=update_deque, 
-                                          args=(camera, object_detector, yolo_output_data, True), ## Visualization is True
+                                          ## Pass the camera, object_detector, yolo_output_data, update_frequency, visualization
+                                          args=(camera, object_detector, yolo_output_data, 1, True),
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
     try:
         while True:
-            time.sleep(0.001)
+            ## Get the LLM response
+            llm_response = get_llm_response(llm, yolo_output_data)
+            time.sleep(5)
     except KeyboardInterrupt:
         data_update_thread.join()
         cv2.destroyAllWindows

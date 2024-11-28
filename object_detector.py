@@ -89,7 +89,7 @@ class objectDetector:
             # Convert to world coordinates
             x_world = z * x_ndc
             y_world = z * y_ndc
-            world_coordinates.append((round(x_world, 1), round(y_world, 1), round(z, 1)))
+            world_coordinates.append((round(x_world, 2), round(y_world, 2), round(z, 2)))
         return world_coordinates
     
     def get_objects_with_location(self,

@@ -10,6 +10,7 @@ class cameraInput:
             self.num_frames = self.color_frames.shape[0]
             self.intrinsics = self.data["intrinsics"].item()
             self.image_details = self.data["image_details"].item()
+            self.depth_scale = self.image_details["depth_scale"]
         else:
             print("Real-time camera input not implemented yet.")
             raise NotImplementedError
