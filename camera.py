@@ -67,6 +67,15 @@ class RealSenseCamera:
     def get_depth_frame(self):
         """Get the current depth frame."""
         return self.depth_frame
+    
+    def get_available_streams(self):
+        """Get the available streams."""
+        context = rs.context()
+        devices = context.query_devices()
+        for device in devices:
+            for sensor in device.query_sensors():
+                for profile in sensor.get_stream_profiles():
+                    print(profile.stream_name(), profile.stream_index(), profile.format(), profile.fps())
 
 if __name__ == "__main__":
     camera = RealSenseCamera()

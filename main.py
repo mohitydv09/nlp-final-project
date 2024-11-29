@@ -13,11 +13,21 @@ from camera_input import cameraInput ## For the camera input from stored data.
 from object_detector import objectDetector
 
 ## Global Variables
+## Location Cutoffs
 THETA_1 = 80
 THETA_2 = 70
 R_1 = 2
 R_2 = 5
 CLOSE_X_CUTOFF = 0.7
+
+DEQUE_MAX_LENGTH = 30
+DEQUE_UPDATE_FREQEUNCY = 1 ## In seconds
+LLM_RESPONSE_FREQUENCY = 5 ## In seconds
+
+LLM_MODEL_NAME = 'gpt-4o-mini'
+LLM_TEMPERATURE = 0.5
+
+DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
 
 def get_polar_coordinates(x:float, z:float) -> Tuple:
     """Will return the polar coordinates of the object, r in meters and theta in degrees"""
@@ -76,6 +86,27 @@ def structure_yolo_output(yolo_output_list: List[Tuple]) -> str:
             output_string += f"\t{j}. '{label}' is {position} and {round(r,1)} meters away\n"
     return output_string
 
+def structure_yolo_output_json(yolo_output_list: List[Tuple]) -> json:
+    """Will structure the yolo output in the required JSON format"""
+    json_data = {}
+    json_data['observations'] = []
+    for i, (labels, world_coordinates) in enumerate(yolo_output_list):
+        timestamp = -i
+        json_data['observations'].append({
+            "timestamp": timestamp,
+            "objects": []
+        })
+        for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
+            r, theta = get_polar_coordinates(world_coordinate[0], world_coordinate[2])
+            position = get_position_label(theta, r, world_coordinate[0])
+            json_data['observations'][i]['objects'].append({
+                "label": label,
+                "position": position,
+                "distance": round(r,1)
+            })
+        if json_data['observations'][i]['objects'] == []:
+            json_data['observations'][i]['objects'] = None
+    return json_data
 
 def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple]) -> str:
     """Will get the response from the LLM model"""
@@ -86,6 +117,11 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple]) -> str:
     ## Structure the data in the required format.
     structured_data = structure_yolo_output(yolo_output_list)
     print(structured_data)
+
+    ## Get the JSON data and save it to a file.
+    json_data = structure_yolo_output_json(yolo_output_list)
+    with open("./utils/yolo_output_trial.json", "w") as f:
+        json.dump(json_data, f, indent=4)
 
     # ## Load the system message from file
     # with open("utils/nav_system_prompt_1.txt", "r") as f:
@@ -136,43 +172,17 @@ def update_deque(camera: RealSenseCamera,
                 yolo_output.appendleft((labels, world_coordinates))
             current_time = time.time()
 
-## Implement as thread
-def update_deque_no_cam(camera: RealSenseCamera, object_detector: objectDetector, data: deque[Tuple]):
-    """Will update the deque with the new data""" 
-    start_time = time.time()
-
-    ## Get the RGB and Depth frames
-    # rgb_frame = camera.get_color_frame()
-    # depth_frame = camera.get_depth_frame()
-    intrinsics_dict = camera.intrinsics
-    depth_scale = camera.image_details["depth_scale"]
-    rgb_frame, depth_frame = camera.get_rgbd_frame()
-    depth_frame = depth_frame * depth_scale
-    intrinsics = camera.intrinsics
-
-    labels, pixel_coordinates, world_coordinates = object_detector.get_objects_with_location(rgb_frame, depth_frame, intrinsics)
-
-    for label, (x,y), (X,Y,Z) in zip(labels, pixel_coordinates, world_coordinates):
-        cv2.putText(rgb_frame, label, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        cv2.putText(rgb_frame, f"({X}, {Y}, {Z})", (int(x), int(y+20)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
-        cv2.circle(rgb_frame, (int(x), int(y)), 5, (0, 0, 255), -1)
-    cv2.imshow("RGB Image", rgb_frame)
-
-    data.append((labels, pixel_coordinates, world_coordinates))
-    data_json_format = data_json(data)
-
-    print(data_json_format)
-
-    time.sleep(max(0, (1 - (time.time() - start_time))))
-
-    cv2.waitKey(1)
+        ## If Running from local file then slow down the loop at 30fps.
+        ## Won't be perfect 30fps, but will be close.
+        if camera.idx is not None: ## Means running from local file.
+            time.sleep(max(0, (1/30 - (time.time() - current_time))))
 
 def main():
     """Will Import all the classes and functions from the other files and run the program"""
 
     ## Initialize the camera and warm it up. 
     ## Keep the visualization off as we will visualize from the update_deque function.
-    working_with_local_data = False
+    working_with_local_data = True
     if working_with_local_data:
         camera = cameraInput(from_prestored=True)
     else:
@@ -181,17 +191,20 @@ def main():
         while camera.color_frame is None: ## Will be blocking until the camera starts sending frames.
             continue
 
-    object_detector = objectDetector(device='cuda:0')
-    llm = LLM(model_name='gpt-4o-mini', temperature=0.5)
+    object_detector = objectDetector(device=DEVICE)
+    llm = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
 
     ## Initialize the deque to store the data, 
     ## Maxlen is set to 30, so that only the last 30 seconds data is stored.
-    yolo_output_data = deque(maxlen=30)
+    yolo_output_data = deque(maxlen=DEQUE_MAX_LENGTH)
 
     ## Update the deque with the new data
     data_update_thread = threading.Thread(target=update_deque, 
-                                          ## Pass the camera, object_detector, yolo_output_data, update_frequency, visualization
-                                          args=(camera, object_detector, yolo_output_data, 1, True),
+                                          args=(camera, 
+                                                object_detector, 
+                                                yolo_output_data, 
+                                                DEQUE_UPDATE_FREQEUNCY,     ## Update Frequency
+                                                False),                     ## Visualization
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
@@ -199,7 +212,7 @@ def main():
         while True:
             ## Get the LLM response
             llm_response = get_llm_response(llm, yolo_output_data)
-            time.sleep(5)
+            time.sleep(LLM_RESPONSE_FREQUENCY)
     except KeyboardInterrupt:
         data_update_thread.join()
         cv2.destroyAllWindows

@@ -2,7 +2,6 @@ import os
 import time
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
-import time
 
 class LLM():
     def __init__(self, model_name: str = 'gpt-4o-mini', temperature:float=0.5) -> None:
