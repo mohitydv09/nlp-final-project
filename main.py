@@ -11,6 +11,7 @@ from llm import LLM
 from camera import RealSenseCamera
 from camera_input import cameraInput ## For the camera input from stored data.
 from object_detector import objectDetector
+from image_caption import imageCaption
 
 ## Global Variables
 ## Location Cutoffs
@@ -28,6 +29,15 @@ LLM_MODEL_NAME = 'gpt-4o-mini'
 LLM_TEMPERATURE = 0.5
 
 DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
+stop_event = threading.Event()
+
+def scenic_description(camera: RealSenseCamera, vlm: imageCaption) -> str:
+    """Will return the scenic description of the environment"""
+    ## Get the RBG Frame from the camera.
+    rgb_frame = camera.get_color_frame()
+    prompt_for_vlm = "You are looking at"
+    description = vlm.get_conditional_caption(rgb_frame, prompt_for_vlm)
+    return description
 
 def get_polar_coordinates(x:float, z:float) -> Tuple:
     """Will return the polar coordinates of the object, r in meters and theta in degrees"""
@@ -145,7 +155,7 @@ def update_deque(camera: RealSenseCamera,
     """Will update the deque with the new data and visualize the data if required""" 
     current_time = time.time()
     deque_lock = threading.Lock()
-    while True:
+    while not stop_event.is_set():
         ## Get the RGB and Depth frames
         rgb_frame = camera.get_color_frame()
         depth_frame = camera.get_depth_frame()
@@ -177,6 +187,16 @@ def update_deque(camera: RealSenseCamera,
         if camera.idx is not None: ## Means running from local file.
             time.sleep(max(0, (1/30 - (time.time() - current_time))))
 
+def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple]) -> None:
+    """Will run the navigation mode"""
+    try:
+        while True:
+            ## Get the LLM response
+            llm_response = get_llm_response(llm, yolo_output_data)
+            time.sleep(LLM_RESPONSE_FREQUENCY)
+    except KeyboardInterrupt:
+        return
+
 def main():
     """Will Import all the classes and functions from the other files and run the program"""
 
@@ -193,6 +213,7 @@ def main():
 
     object_detector = objectDetector(device=DEVICE)
     llm = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
+    vlm = imageCaption()
 
     ## Initialize the deque to store the data, 
     ## Maxlen is set to 30, so that only the last 30 seconds data is stored.
@@ -208,14 +229,17 @@ def main():
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
-    try:
-        while True:
-            ## Get the LLM response
-            llm_response = get_llm_response(llm, yolo_output_data)
-            time.sleep(LLM_RESPONSE_FREQUENCY)
-    except KeyboardInterrupt:
-        data_update_thread.join()
-        cv2.destroyAllWindows
+    ## Run the navigation mode
+    # navigation_mode(llm, yolo_output_data)
+
+    ## Run the Scene Description
+    description = scenic_description(camera, vlm)
+    print(description)
+
+    stop_event.set()
+    data_update_thread.join()
+    cv2.destroyAllWindows
+    if not working_with_local_data:
         camera.stop()
 
 if __name__ == "__main__":
