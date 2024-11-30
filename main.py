@@ -23,7 +23,7 @@ CLOSE_X_CUTOFF = 0.7
 
 DEQUE_MAX_LENGTH = 15
 DEQUE_UPDATE_FREQEUNCY = 1 ## In seconds
-LLM_RESPONSE_FREQUENCY = 1 ## In seconds
+LLM_RESPONSE_FREQUENCY = 5 ## In seconds
 
 LLM_MODEL_NAME = 'gpt-4o-mini'
 LLM_TEMPERATURE = 0.5
@@ -135,28 +135,39 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple]) -> str:
     ## Cast data as a list.
     yolo_output_list = list(yolo_output_data)
 
-    ## Structure the data in the required format.
-    structured_data = structure_yolo_output(yolo_output_list)
-    print(structured_data)
+    # ## Structure the data in the required format.
+    # structured_data = structure_yolo_output(yolo_output_list)
+    # print(structured_data)
 
     ## Get the JSON data and save it to a file.
     json_data = structure_yolo_output_json(yolo_output_list)
-    with open("./utils/yolo_output_trial.json", "w") as f:
-        json.dump(json_data, f, indent=4)
+    # with open("./utils/yolo_output_trial.json", "w") as f:
+    #     json.dump(json_data, f, indent=4)
 
-    # ## Load the system message from file
-    # with open("utils/nav_system_prompt_1.txt", "r") as f:
-    #     system_message = f.read()
+    ## Make the System Message:
+    system_message = ""
+    ## Load the system message from file
+    with open("utils/nav_system_prompt_1.txt", "r") as f:
+        header_text = f.read()
 
+    with open("utils/example1.json", "r") as f:
+        example1 = json.load(f)
+
+    with open("utils/example2.json", "r") as f:
+        example2 = json.load(f)
+
+    system_message = header_text + "\n\n" + json.dumps(example1, indent=4) + "\n\n" + json.dumps(example2, indent=4)
+
+    user_message = json.dumps(json_data, indent=4)
     # ## Create User Message from the structured data
     # user_message = f"Hello {structured_data}"
 
-    # llm_response = llm.generate_response(
-    #     system_message=system_message, 
-    #     user_message=user_message
-    # )
+    llm_response = llm.generate_response(
+        system_message=system_message, 
+        user_message=user_message
+    )
 
-    # return llm_response
+    return llm_response
 
 def update_deque(camera: RealSenseCamera, 
                  object_detector: objectDetector, 
@@ -209,6 +220,7 @@ def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple]) -> None:
         while True:
             ## Get the LLM response
             llm_response = get_llm_response(llm, yolo_output_data)
+            print(llm_response)
             time.sleep(LLM_RESPONSE_FREQUENCY)
     except KeyboardInterrupt:
         return
@@ -240,7 +252,7 @@ def main():
                                                 object_detector, 
                                                 yolo_output_data, 
                                                 DEQUE_UPDATE_FREQEUNCY,     ## Update Frequency
-                                                True),                     ## Visualization
+                                                False),                     ## Visualization
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
@@ -259,3 +271,16 @@ def main():
 
 if __name__ == "__main__":
     main()
+    ## Open the JSON file and get the data
+    # with open("./utils/example2_data.json", "r") as f:
+    #     json_data = json.load(f)
+
+    # # Write a new file with the data
+    # json_example = {}
+
+    # json_example['example'] = json_data
+    # json_example['output'] = "You are moving toward a person. There seems to be a chair near the person."
+
+    # ## Save the data to a file
+    # with open("./utils/example2_final.json", "w") as f:
+    #     json.dump(json_example, f, indent=4)

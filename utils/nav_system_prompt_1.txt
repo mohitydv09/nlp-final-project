@@ -10,9 +10,3 @@ Follow these rules:
 6. Clarity and Urgency: Phrase updates in a clear, non-alarming manner, emphasizing urgency only for imminent risks.
 
 Example of Expected input and output:
-
-## Put a example output.
-
-## Put example prompt.
-
-

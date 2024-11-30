@@ -3,7 +3,7 @@ import numpy as np
 class cameraInput:
     def __init__(self, from_prestored = True)-> None:
         if from_prestored:
-            self.data = self.load_data('data/person_sitting_in_way.npz')
+            self.data = self.load_data('data/keller_stairway.npz')
             self.color_frames = self.data["color_frames"]
             self.depth_frames = self.data["depth_frames"]
             self.idx = 0
