@@ -236,11 +236,56 @@ def main():
     description = scenic_description(camera, vlm)
     print(description)
 
+    ## Clean Up the resources
     stop_event.set()
     data_update_thread.join()
     cv2.destroyAllWindows
     if not working_with_local_data:
         camera.stop()
 
+
+from langchain.agents import create_react_agent, Tool, AgentExecutor
+from langchain.prompts import PromptTemplate
+
+def sum_fn(x,y):
+    return x+y
+
+def product_fn(x,y):
+    return x*y
+
+def agent_main():
+    LLM_TEMPERATURE = 0.01
+    llm_wrapper = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
+    llm = llm_wrapper.model
+
+    sumTool = Tool(
+        name='sum',
+        func=sum_fn,
+        description='Sum two numbers',
+    )
+
+    multiplyTool = Tool(
+        name='multiply',
+        func=product_fn,
+        description='Multiply two numbers',
+    )
+    
+    tools = [sumTool, multiplyTool]
+
+    prompt = PromptTemplate(
+        prompt="I don't know what is the sum of 2 and 3"
+    )
+
+    agent = create_react_agent(
+        llm=llm,
+        tools=tools,
+        prompt=prompt,
+    )
+    agent_executer = AgentExecutor(agent, tools=tools)
+
+    agent_executer.invoke(prompt)
+
+    print(agent_executer.response)
+
 if __name__ == "__main__":
-    main()
+    agent_main()
