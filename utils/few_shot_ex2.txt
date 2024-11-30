@@ -124,3 +124,5 @@
         }
     ]
 }
+
+Answer: You are moving toward a person. There seems to be a chair near the person.

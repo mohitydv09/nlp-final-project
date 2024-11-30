@@ -21,12 +21,13 @@ R_1 = 2
 R_2 = 5
 CLOSE_X_CUTOFF = 0.7
 
-DEQUE_MAX_LENGTH = 30
+DEQUE_MAX_LENGTH = 15
 DEQUE_UPDATE_FREQEUNCY = 1 ## In seconds
-LLM_RESPONSE_FREQUENCY = 5 ## In seconds
+LLM_RESPONSE_FREQUENCY = 1 ## In seconds
 
 LLM_MODEL_NAME = 'gpt-4o-mini'
 LLM_TEMPERATURE = 0.5
+WORKING_WITH_LOCAL_DATA = True
 
 DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
 stop_event = threading.Event()
@@ -55,9 +56,9 @@ def get_position_label(theta:float, r:float, x:float) -> str:
             return"to your right"
         elif(theta > 180-THETA_2): #1
             return "to your left"
-        elif(theta > THETA_1): #4
+        elif(theta < THETA_1): #4
             return "slightly to your right"
-        elif(theta < 180-THETA_1): #2
+        elif(theta > 180-THETA_1): #2
             return "slightly to your left"
         else: #3
             return "in front of you"
@@ -67,9 +68,9 @@ def get_position_label(theta:float, r:float, x:float) -> str:
             return "to your right"
         elif(theta > 180-THETA_2):
             return "to your left"
-        elif(theta > THETA_1):
+        elif(theta < THETA_1):
             return "slightly to your right"
-        elif(theta < 180-THETA_1):
+        elif(theta > 180-THETA_1):
             return "slightly to your left"
         else:
             return "in front of you"
@@ -91,9 +92,12 @@ def structure_yolo_output(yolo_output_list: List[Tuple]) -> str:
         else:
             output_string += f"Observation {i} second ago:\n"
         for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
-            r, theta = get_polar_coordinates(world_coordinate[0], world_coordinate[2])
-            position = get_position_label(theta, r, world_coordinate[0])
-            output_string += f"\t{j}. '{label}' is {position} and {round(r,1)} meters away\n"
+            if world_coordinate[2] == 0.0:
+                output_string += f"\t{j}. '{label}' is in the frame but we don't know where\n"
+            else:
+                r, theta = get_polar_coordinates(world_coordinate[0], world_coordinate[2])
+                position = get_position_label(theta, r, world_coordinate[0])
+                output_string += f"\t{j}. '{label}' is {position} and {round(r,1)} meters away\n"
     return output_string
 
 def structure_yolo_output_json(yolo_output_list: List[Tuple]) -> json:
@@ -107,13 +111,20 @@ def structure_yolo_output_json(yolo_output_list: List[Tuple]) -> json:
             "objects": []
         })
         for j, (label, world_coordinate) in enumerate(zip(labels, world_coordinates)):
-            r, theta = get_polar_coordinates(world_coordinate[0], world_coordinate[2])
-            position = get_position_label(theta, r, world_coordinate[0])
-            json_data['observations'][i]['objects'].append({
-                "label": label,
-                "position": position,
-                "distance": round(r,1)
-            })
+            if world_coordinate[2] == 0.0:
+                json_data['observations'][i]['objects'].append({
+                    "label": label,
+                    "position": None,
+                    "distance": None
+                })
+            else:
+                r, theta = get_polar_coordinates(world_coordinate[0], world_coordinate[2])
+                position = get_position_label(theta, r, world_coordinate[0])
+                json_data['observations'][i]['objects'].append({
+                    "label": label,
+                    "position": position,
+                    "distance": round(r,1)
+                })
         if json_data['observations'][i]['objects'] == []:
             json_data['observations'][i]['objects'] = None
     return json_data
@@ -170,7 +181,12 @@ def update_deque(camera: RealSenseCamera,
                 cv2.putText(rgb_frame, f"({X}, {Y}, {Z})", (int(x), int(y+20)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
                 cv2.circle(rgb_frame, (int(x), int(y)), 5, (0, 0, 255), -1)
             cv2.imshow("RGB Image", rgb_frame)
-            cv2.waitKey(1)
+            # cv2.imshow("Depth Image", depth_frame)
+            try:
+                if camera.idx:
+                    cv2.waitKey(35)
+            except:
+                cv2.waitKey(1)
 
         ## Deque structure
         # 0th element is latest data, and the last element is the oldest data.
@@ -184,8 +200,8 @@ def update_deque(camera: RealSenseCamera,
 
         ## If Running from local file then slow down the loop at 30fps.
         ## Won't be perfect 30fps, but will be close.
-        if camera.idx is not None: ## Means running from local file.
-            time.sleep(max(0, (1/30 - (time.time() - current_time))))
+        # if camera.idx is not None: ## Means running from local file.
+        #     time.sleep(max(0, (1000/30 - (time.time() - current_time))))
 
 def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple]) -> None:
     """Will run the navigation mode"""
@@ -202,8 +218,7 @@ def main():
 
     ## Initialize the camera and warm it up. 
     ## Keep the visualization off as we will visualize from the update_deque function.
-    working_with_local_data = True
-    if working_with_local_data:
+    if WORKING_WITH_LOCAL_DATA:
         camera = cameraInput(from_prestored=True)
     else:
         camera = RealSenseCamera(visualization=False)
@@ -213,7 +228,7 @@ def main():
 
     object_detector = objectDetector(device=DEVICE)
     llm = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
-    vlm = imageCaption()
+    # vlm = imageCaption()
 
     ## Initialize the deque to store the data, 
     ## Maxlen is set to 30, so that only the last 30 seconds data is stored.
@@ -225,21 +240,21 @@ def main():
                                                 object_detector, 
                                                 yolo_output_data, 
                                                 DEQUE_UPDATE_FREQEUNCY,     ## Update Frequency
-                                                False),                     ## Visualization
+                                                True),                     ## Visualization
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
     ## Run the navigation mode
-    # navigation_mode(llm, yolo_output_data)
+    navigation_mode(llm, yolo_output_data)
 
     ## Run the Scene Description
-    description = scenic_description(camera, vlm)
-    print(description)
+    # description = scenic_description(camera, vlm)
+    # print(description)
 
     stop_event.set()
     data_update_thread.join()
     cv2.destroyAllWindows
-    if not working_with_local_data:
+    if not WORKING_WITH_LOCAL_DATA:
         camera.stop()
 
 if __name__ == "__main__":

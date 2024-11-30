@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import time
 import pyrealsense2 as rs
 
 pipeline = rs.pipeline()
@@ -19,6 +20,7 @@ align_to = rs.stream.color
 align = rs.align(align_to)
 
 i = 0
+start_time = time.time()
 while True:
     frames = pipeline.wait_for_frames()
 
@@ -33,10 +35,12 @@ while True:
     depth_data[i,:,:] = np.asanyarray(depth_frame.get_data())
 
     cv2.imshow("frame", color_data[i,:,:,:])
-    cv2.imshow("depth", depth_data[i,:,:])
+    # cv2.imshow("depth", depth_data[i,:,:])
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+    
+    print("Time: ", round(time.time() - start_time))
 
     i += 1
 
@@ -71,4 +75,5 @@ data_dict = {"color_frames": color_data,
               "intrinsics": intrinsics_dict, 
               "image_details": image_details}
 
-np.savez_compressed(path + "data.npz", **data_dict)
+print("Saving data")
+np.savez_compressed(path + f"data_{time.time()}.npz", **data_dict)
