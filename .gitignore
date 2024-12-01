@@ -5,4 +5,8 @@ models
 data
 __pycache__/
 yolo11n.pt
+venv
+env
+.venv
+.env
 .gitignore
