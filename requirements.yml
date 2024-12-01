@@ -1,4 +1,4 @@
-name: nlp_test
+name: nlp
 channels:
   - pytorch
   - nvidia
