@@ -22,12 +22,13 @@ R_2 = 5
 CLOSE_X_CUTOFF = 0.7
 
 DEQUE_MAX_LENGTH = 15
+RESPONSE_DEQUE_LENGTH = 5
 DEQUE_UPDATE_FREQEUNCY = 1 ## In seconds
 LLM_RESPONSE_FREQUENCY = 5 ## In seconds
 
 LLM_MODEL_NAME = 'gpt-4o-mini'
 LLM_TEMPERATURE = 0.5
-WORKING_WITH_LOCAL_DATA = True
+WORKING_WITH_LOCAL_DATA = False
 
 DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
 stop_event = threading.Event()
@@ -129,12 +130,13 @@ def structure_yolo_output_json(yolo_output_list: List[Tuple]) -> json:
             json_data['observations'][i]['objects'] = None
     return json_data
 
-def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple]) -> str:
+def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str]) -> str:
     """Will get the response from the LLM model"""
     
     ## Cast data as a list.
     yolo_output_list = list(yolo_output_data)
 
+    ## This is for Making the data in human readable format.
     # ## Structure the data in the required format.
     # structured_data = structure_yolo_output(yolo_output_list)
     # print(structured_data)
@@ -156,16 +158,23 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple]) -> str:
     with open("utils/example2.json", "r") as f:
         example2 = json.load(f)
 
-    system_message = header_text + "\n\n" + json.dumps(example1, indent=4) + "\n\n" + json.dumps(example2, indent=4)
+    previous_message = """
+    The previous LLM responses with the most recent being first in the list are:
+    """ 
+    for i, prev_response in enumerate(list(llm_response_data)):
+        prev_time = -(i + 1) * LLM_RESPONSE_FREQUENCY
+        previous_message += f"\n\tAt {prev_time} seconds ago: {prev_response}"
+
+    system_message = header_text + "\n\n" + json.dumps(example1, indent=4) + "\n\n" + json.dumps(example2, indent=4) + "\n\n" +  previous_message
 
     user_message = json.dumps(json_data, indent=4)
-    # ## Create User Message from the structured data
-    # user_message = f"Hello {structured_data}"
 
     llm_response = llm.generate_response(
         system_message=system_message, 
         user_message=user_message
     )
+
+    llm_response_data.appendleft(llm_response)
 
     return llm_response
 
@@ -214,12 +223,12 @@ def update_deque(camera: RealSenseCamera,
         # if camera.idx is not None: ## Means running from local file.
         #     time.sleep(max(0, (1000/30 - (time.time() - current_time))))
 
-def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple]) -> None:
+def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str]) -> None:
     """Will run the navigation mode"""
     try:
         while True:
             ## Get the LLM response
-            llm_response = get_llm_response(llm, yolo_output_data)
+            llm_response = get_llm_response(llm, yolo_output_data, llm_response_data)
             print(llm_response)
             time.sleep(LLM_RESPONSE_FREQUENCY)
     except KeyboardInterrupt:
@@ -245,6 +254,7 @@ def main():
     ## Initialize the deque to store the data, 
     ## Maxlen is set to 30, so that only the last 30 seconds data is stored.
     yolo_output_data = deque(maxlen=DEQUE_MAX_LENGTH)
+    llm_response_data = deque(maxlen=RESPONSE_DEQUE_LENGTH)
 
     ## Update the deque with the new data
     data_update_thread = threading.Thread(target=update_deque, 
@@ -252,12 +262,12 @@ def main():
                                                 object_detector, 
                                                 yolo_output_data, 
                                                 DEQUE_UPDATE_FREQEUNCY,     ## Update Frequency
-                                                False),                     ## Visualization
+                                                True),                     ## Visualization
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
     ## Run the navigation mode
-    navigation_mode(llm, yolo_output_data)
+    navigation_mode(llm, yolo_output_data, llm_response_data)
 
     ## Run the Scene Description
     # description = scenic_description(camera, vlm)
@@ -271,16 +281,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    ## Open the JSON file and get the data
-    # with open("./utils/example2_data.json", "r") as f:
-    #     json_data = json.load(f)
-
-    # # Write a new file with the data
-    # json_example = {}
-
-    # json_example['example'] = json_data
-    # json_example['output'] = "You are moving toward a person. There seems to be a chair near the person."
-
-    # ## Save the data to a file
-    # with open("./utils/example2_final.json", "w") as f:
-    #     json.dump(json_example, f, indent=4)
