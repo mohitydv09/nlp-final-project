@@ -137,7 +137,6 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_dat
     yolo_output_list = list(yolo_output_data)
 
     ## This is for Making the data in human readable format.
-    # ## Structure the data in the required format.
     # structured_data = structure_yolo_output(yolo_output_list)
     # print(structured_data)
 
@@ -201,8 +200,7 @@ def update_deque(camera: RealSenseCamera,
                 cv2.putText(rgb_frame, f"({X}, {Y}, {Z})", (int(x), int(y+20)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
                 cv2.circle(rgb_frame, (int(x), int(y)), 5, (0, 0, 255), -1)
             cv2.imshow("RGB Image", rgb_frame)
-            # cv2.imshow("Depth Image", depth_frame)
-            try:
+            try: ## If running from local file then wait for 35ms, else wait for 1ms.
                 if camera.idx:
                     cv2.waitKey(35)
             except:
@@ -218,19 +216,15 @@ def update_deque(camera: RealSenseCamera,
                 yolo_output.appendleft((labels, world_coordinates))
             current_time = time.time()
 
-        ## If Running from local file then slow down the loop at 30fps.
-        ## Won't be perfect 30fps, but will be close.
-        # if camera.idx is not None: ## Means running from local file.
-        #     time.sleep(max(0, (1000/30 - (time.time() - current_time))))
-
 def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str]) -> None:
     """Will run the navigation mode"""
     try:
         while True:
             ## Get the LLM response
+            start_time = time.time()
             llm_response = get_llm_response(llm, yolo_output_data, llm_response_data)
             print(llm_response)
-            time.sleep(LLM_RESPONSE_FREQUENCY)
+            time.sleep(max(0, LLM_RESPONSE_FREQUENCY - (time.time() - start_time)))
     except KeyboardInterrupt:
         return
 

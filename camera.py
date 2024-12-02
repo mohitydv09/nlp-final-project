@@ -16,6 +16,7 @@ class RealSenseCamera:
 
         self.color_frame = None
         self.depth_frame = None
+        self.imu_data = None
         self.running = False
         self.thread = threading.Thread(target=self._update_frames, daemon=True)
 
@@ -75,7 +76,8 @@ class RealSenseCamera:
         for device in devices:
             for sensor in device.query_sensors():
                 for profile in sensor.get_stream_profiles():
-                    print(profile.stream_name(), profile.stream_index(), profile.format(), profile.fps())
+                    print(profile.stream_name(), profile.format(), profile.fps())
+
 
 if __name__ == "__main__":
     camera = RealSenseCamera()
