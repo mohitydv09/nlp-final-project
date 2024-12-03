@@ -3,7 +3,6 @@ import json
 import time
 import threading
 import numpy as np
-## import inflect
 from collections import deque
 from typing import List, Tuple
 
@@ -34,6 +33,8 @@ WORKING_WITH_LOCAL_DATA = True
 LOCAL_DATA_FILE_PATH = "data/keller_study.npz"
 
 DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
+MODE = "VQA" ## "NAV" or "SD"
+
 stop_event = threading.Event()
 
 def scenic_description(camera: RealSenseCamera, vlm: imageCaption) -> str:
@@ -294,8 +295,6 @@ def interactive_vqa(image_vqa, llm, camera, image_caption):
         print(f"blip_response : {blip_response}")
         print(f"vqa_response : {vqa_response}")
 
-
-
 def main():
     """Will Import all the classes and functions from the other files and run the program"""
 
@@ -330,15 +329,12 @@ def main():
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
-    ## Run the navigation mode
-    # navigation_mode(llm, yolo_output_data, llm_response_data)
-
-    ## Run the Scene Description
-    description = scenic_description(camera, vlm)
-    print(description)
-
-
-    interactive_vqa(image_vqa, llm, camera, description)
+    if MODE == "NAV":
+        navigation_mode(llm, yolo_output_data, llm_response_data, audio_handler)
+    elif MODE == "VQA":
+        interactive_vqa(image_vqa, llm, camera, vlm)
+    elif MODE == "SD":
+        print("Caption generation from the VLM: ", scenic_description(camera, vlm))
 
     stop_event.set()
     data_update_thread.join()
