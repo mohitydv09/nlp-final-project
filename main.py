@@ -7,12 +7,12 @@ from collections import deque
 from typing import List, Tuple
 
 from llm import LLM
-from audio_handler import audioHandler
+from audio_handler import AudioHandler
 from camera import RealSenseCamera
-from camera_input import cameraInput ## For the camera input from stored data.
-from object_detector import objectDetector
-from image_caption import imageCaption
-from image_vqa import imageVqa
+from camera_input import CameraInput ## For the camera input from stored data.
+from object_detector import ObjectDetector
+from image_caption import ImageCaption
+from image_vqa import ImageVQA
 
 ## Global Variables
 ## Location Cutoffs
@@ -33,11 +33,11 @@ WORKING_WITH_LOCAL_DATA = True
 LOCAL_DATA_FILE_PATH = "data/keller_study.npz"
 
 DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
-MODE = "VQA" ## "NAV" or "SD"
+MODE = "NAV" ## "VQA" "NAV" or "SD"
 
 stop_event = threading.Event()
 
-def scenic_description(camera: RealSenseCamera, vlm: imageCaption) -> str:
+def scenic_description(camera: RealSenseCamera, vlm: ImageCaption) -> str:
     """Will return the scenic description of the environment"""
     ## Get the RBG Frame from the camera.
     rgb_frame = camera.get_color_frame()
@@ -134,7 +134,7 @@ def structure_yolo_output_json(yolo_output_list: List[Tuple]) -> json:
             json_data['observations'][i]['objects'] = None
     return json_data
 
-def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str], audio_handler: audioHandler) -> str:
+def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str], audio_handler: AudioHandler) -> str:
     """Will get the response from the LLM model"""
     
     ## Cast data as a list.
@@ -186,7 +186,7 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_dat
     return llm_response
 
 def update_deque(camera: RealSenseCamera, 
-                 object_detector: objectDetector, 
+                 object_detector: ObjectDetector, 
                  yolo_output: deque,
                  llm_response_data: deque,
                  update_frequency: float = 1,
@@ -237,7 +237,7 @@ def update_deque(camera: RealSenseCamera,
                 yolo_output.appendleft((labels, world_coordinates))
             current_time = time.time()
 
-def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str], audio_handler: audioHandler) -> None:
+def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str], audio_handler: AudioHandler) -> None:
     """Will run the navigation mode"""
     try:
         while True:
@@ -301,17 +301,17 @@ def main():
     ## Initialize the camera and warm it up. 
     ## Keep the visualization off as we will visualize from the update_deque function.
     if WORKING_WITH_LOCAL_DATA:
-        camera = cameraInput(from_prestored=True, data_path=LOCAL_DATA_FILE_PATH)
+        camera = CameraInput(from_prestored=True, data_path=LOCAL_DATA_FILE_PATH)
     else:
         camera = RealSenseCamera(visualization=False)
         camera.start()
         while camera.color_frame is None: ## Will be blocking until the camera starts sending frames.
             continue
-    audio_handler = audioHandler(pause_threshold=2.5)
-    object_detector = objectDetector(device=DEVICE)
+    audio_handler = AudioHandler(pause_threshold=2.5)
+    object_detector = ObjectDetector(device=DEVICE)
     llm = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
-    vlm = imageCaption()
-    image_vqa = imageVqa()
+    vlm = ImageCaption()
+    image_vqa = ImageVQA()
 
     ## Initialize the deque to store the data, 
     ## Maxlen is set to 30, so that only the last 30 seconds data is stored.

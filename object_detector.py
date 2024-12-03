@@ -4,9 +4,9 @@ import cv2
 
 from ultralytics import YOLO
 
-from camera_input import cameraInput
+from camera_input import CameraInput
 
-class objectDetector:
+class ObjectDetector:
     def __init__(self, model_name='yolo11n.pt', model_folder='./models', device='cpu')->None:
         self.model = self.load_model(model_name=model_name, model_folder=model_folder)
         self.device = device
@@ -107,8 +107,8 @@ class objectDetector:
         
 
 if __name__ == "__main__":
-    object_detector = objectDetector()
-    camera_input = cameraInput()
+    object_detector = ObjectDetector()
+    camera_input = CameraInput()
     intrinsics_dict = camera_input.intrinsics
     depth_scale = camera_input.image_details["depth_scale"]
     for i in range(2000):

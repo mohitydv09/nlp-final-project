@@ -2,14 +2,12 @@ import time
 import torch
 import numpy as np
 from llm import LLM
-import cv2
 from transformers import AutoProcessor, BlipForQuestionAnswering
 
-from camera_input import cameraInput
-from image_caption import imageCaption
+from camera_input import CameraInput
+from image_caption import ImageCaption
 
-
-class imageVqa():
+class ImageVQA():
     def __init__(self) -> None:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.processor = AutoProcessor.from_pretrained("Salesforce/blip-vqa-base")
@@ -71,10 +69,10 @@ if __name__ == "__main__":
     llm = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
     
     # Initialize variables
-    camera_input = cameraInput()
+    camera_input = CameraInput()
     rgb_frame = camera_input.get_color_frame()
 
-    image_vqa = imageVqa()
+    image_vqa = ImageVQA()
     image_caption = "you are looking at a man standing in a room with a whiteboard"
     query_hist = []  # List to store the history of queries and responses
 

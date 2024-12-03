@@ -3,11 +3,11 @@ import torch
 import numpy as np
 import cv2
 
-from camera_input import cameraInput
+from camera_input import CameraInput
 
 from transformers import BlipProcessor, BlipForConditionalGeneration
 
-class imageCaption():
+class ImageCaption():
     def __init__(self)->None:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
@@ -26,11 +26,11 @@ class imageCaption():
 if __name__ == "__main__":
 
     ## Get the image from the camera
-    camera_input = cameraInput()
+    camera_input = CameraInput()
     rgb_frame = camera_input.get_color_frame()
 
     ## Get the image caption
-    image_caption = imageCaption()
+    image_caption = ImageCaption()
 
     start_time = time.time()    
     unconditional_caption = image_caption.get_unconditional_caption(rgb_frame)

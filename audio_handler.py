@@ -3,10 +3,9 @@ import threading
 import subprocess
 from gtts import gTTS
 from pydub import AudioSegment
-from playsound import playsound
 import speech_recognition as sr
 
-class audioHandler:
+class AudioHandler:
     def __init__(self, pause_threshold: float = 1) -> None:
         self.recognizer = sr.Recognizer()
         self.recognizer.pause_threshold = pause_threshold
@@ -49,6 +48,6 @@ class audioHandler:
                 return None
 
 if __name__ == '__main__':
-    talker = audioHandler(pause_threshold=2.5)
+    talker = AudioHandler(pause_threshold=2.5)
     talker.speak("Hello, I am a speaker.")
     talker.listen()
