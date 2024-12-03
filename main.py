@@ -8,6 +8,7 @@ from collections import deque
 from typing import List, Tuple
 
 from llm import LLM
+from audio_handler import audioHandler
 from camera import RealSenseCamera
 from camera_input import cameraInput ## For the camera input from stored data.
 from object_detector import objectDetector
@@ -27,8 +28,9 @@ DEQUE_UPDATE_FREQEUNCY = 1 ## In seconds
 LLM_RESPONSE_FREQUENCY = 5 ## In seconds
 
 LLM_MODEL_NAME = 'gpt-4o-mini'
-LLM_TEMPERATURE = 0.5
-WORKING_WITH_LOCAL_DATA = False
+LLM_TEMPERATURE = 0.0 ## Deterministic
+WORKING_WITH_LOCAL_DATA = True
+LOCAL_DATA_FILE_PATH = "data/keller_study.npz"
 
 DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
 stop_event = threading.Event()
@@ -130,7 +132,7 @@ def structure_yolo_output_json(yolo_output_list: List[Tuple]) -> json:
             json_data['observations'][i]['objects'] = None
     return json_data
 
-def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str]) -> str:
+def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str], audio_handler: audioHandler) -> str:
     """Will get the response from the LLM model"""
     
     ## Cast data as a list.
@@ -148,7 +150,7 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_dat
     ## Make the System Message:
     system_message = ""
     ## Load the system message from file
-    with open("utils/nav_system_prompt_1.txt", "r") as f:
+    with open("utils/nav_system_prompt_3.txt", "r") as f:
         header_text = f.read()
 
     with open("utils/example1.json", "r") as f:
@@ -158,13 +160,17 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_dat
         example2 = json.load(f)
 
     previous_message = """
-    The previous LLM responses with the most recent being first in the list are:
+    The previous LLM responses with the most recent being first in the list are given:
     """ 
+    previous_responses = {}
+    previous_responses['previous_AI_responses'] = []
     for i, prev_response in enumerate(list(llm_response_data)):
-        prev_time = -(i + 1) * LLM_RESPONSE_FREQUENCY
-        previous_message += f"\n\tAt {prev_time} seconds ago: {prev_response}"
+        previous_responses['previous_AI_responses'].append({
+            "timestamp": f"T-{(i+1)*LLM_RESPONSE_FREQUENCY}",
+            "response": prev_response
+        })
 
-    system_message = header_text + "\n\n" + json.dumps(example1, indent=4) + "\n\n" + json.dumps(example2, indent=4) + "\n\n" +  previous_message
+    system_message = header_text + "\n\n" + json.dumps(example1, indent=4) + "\n\n" + json.dumps(example2, indent=4) + "\n\n" +  previous_message + "\n" + json.dumps(previous_responses, indent=4)
 
     user_message = json.dumps(json_data, indent=4)
 
@@ -172,7 +178,7 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_dat
         system_message=system_message, 
         user_message=user_message
     )
-
+    # audio_handler.speak(llm_response)
     llm_response_data.appendleft(llm_response)
 
     return llm_response
@@ -180,6 +186,7 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_dat
 def update_deque(camera: RealSenseCamera, 
                  object_detector: objectDetector, 
                  yolo_output: deque,
+                 llm_response_data: deque,
                  update_frequency: float = 1,
                  visualization: bool = False):
     """Will update the deque with the new data and visualize the data if required""" 
@@ -197,12 +204,24 @@ def update_deque(camera: RealSenseCamera,
         if visualization: ## Code visualization is slow as this only runs once per second. Maybe just run this all the time but apend only once per second.
             for label, (x,y), (X,Y,Z) in zip(labels, pixel_coordinates, world_coordinates):
                 cv2.putText(rgb_frame, label, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-                cv2.putText(rgb_frame, f"({X}, {Y}, {Z})", (int(x), int(y+20)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
+                if Z != 0.0:
+                    cv2.putText(rgb_frame, f"({X}, {Y}, {Z})", (int(x), int(y+20)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
                 cv2.circle(rgb_frame, (int(x), int(y)), 5, (0, 0, 255), -1)
+            last_llm_response = llm_response_data[0] if llm_response_data else "No Response Yet"
+            black_bottom = np.zeros((100, rgb_frame.shape[1], 3), dtype=np.uint8)
+            llm_response_list = last_llm_response.split(" ")
+            first_line = "LLM Response: " + " ".join(llm_response_list[:8])
+            second_line = " ".join(llm_response_list[8:18])
+            third_line = " ".join(llm_response_list[18:])
+            cv2.putText(black_bottom, first_line, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            cv2.putText(black_bottom, second_line, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            cv2.putText(black_bottom, third_line, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            # cv2.putText(black_bottom, f"LLM Response: {last_llm_response}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            rgb_frame = np.vstack((rgb_frame, black_bottom))
             cv2.imshow("RGB Image", rgb_frame)
             try: ## If running from local file then wait for 35ms, else wait for 1ms.
                 if camera.idx:
-                    cv2.waitKey(35)
+                    cv2.waitKey(50)
             except:
                 cv2.waitKey(1)
 
@@ -216,13 +235,13 @@ def update_deque(camera: RealSenseCamera,
                 yolo_output.appendleft((labels, world_coordinates))
             current_time = time.time()
 
-def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str]) -> None:
+def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data: deque[str], audio_handler: audioHandler) -> None:
     """Will run the navigation mode"""
     try:
         while True:
             ## Get the LLM response
             start_time = time.time()
-            llm_response = get_llm_response(llm, yolo_output_data, llm_response_data)
+            llm_response = get_llm_response(llm, yolo_output_data, llm_response_data, audio_handler)
             print(llm_response)
             time.sleep(max(0, LLM_RESPONSE_FREQUENCY - (time.time() - start_time)))
     except KeyboardInterrupt:
@@ -234,13 +253,13 @@ def main():
     ## Initialize the camera and warm it up. 
     ## Keep the visualization off as we will visualize from the update_deque function.
     if WORKING_WITH_LOCAL_DATA:
-        camera = cameraInput(from_prestored=True)
+        camera = cameraInput(from_prestored=True, data_path=LOCAL_DATA_FILE_PATH)
     else:
         camera = RealSenseCamera(visualization=False)
         camera.start()
         while camera.color_frame is None: ## Will be blocking until the camera starts sending frames.
             continue
-
+    audio_handler = audioHandler(pause_threshold=2.5)
     object_detector = objectDetector(device=DEVICE)
     llm = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
     # vlm = imageCaption()
@@ -254,14 +273,15 @@ def main():
     data_update_thread = threading.Thread(target=update_deque, 
                                           args=(camera, 
                                                 object_detector, 
-                                                yolo_output_data, 
+                                                yolo_output_data,
+                                                llm_response_data, 
                                                 DEQUE_UPDATE_FREQEUNCY,     ## Update Frequency
                                                 True),                     ## Visualization
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
     ## Run the navigation mode
-    navigation_mode(llm, yolo_output_data, llm_response_data)
+    navigation_mode(llm, yolo_output_data, llm_response_data, audio_handler)
 
     ## Run the Scene Description
     # description = scenic_description(camera, vlm)
