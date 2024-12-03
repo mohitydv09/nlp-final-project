@@ -13,6 +13,7 @@ from camera import RealSenseCamera
 from camera_input import cameraInput ## For the camera input from stored data.
 from object_detector import objectDetector
 from image_caption import imageCaption
+from image_vqa import imageVqa
 
 ## Global Variables
 ## Location Cutoffs
@@ -247,6 +248,54 @@ def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data:
     except KeyboardInterrupt:
         return
 
+def interactive_vqa(image_vqa, llm, camera, image_caption):
+    """
+    Continuously prompt the user for input, process the query using BLIP and LLM,
+    and provide responses until the user decides to stop.
+
+    Parameters:
+    - image_vqa (imageVqa): Instance of the imageVqa class for processing queries.
+    - llm (LLM): Instance of the LLM class for generating responses.
+    - camera: Camera object to get frames.
+    - image_caption (str): Description of the scene provided by the camera.
+    """
+    # Initialize query history
+    query_hist = []
+
+    # Get the RGB frame from the camera
+    rgb_frame = camera.get_color_frame()
+
+    while True:
+        # Prompt the user for a query
+        user_query = input("Enter your question about the scene (type 'stop' to quit): ").strip()
+
+        if user_query.lower() == "stop":
+            print("Exiting the program.")
+            break
+
+        # Process the query using BLIP
+        start_time = time.time()
+        blip_response = image_vqa.get_query_response(rgb_frame, user_query)
+        print(f"Time taken for query response: {time.time() - start_time}")
+
+        # Generate response using LLM, including the history of queries and responses
+        vqa_response = image_vqa.vqa_llm_response(
+            llm=llm,
+            vlm=blip_response,
+            image_caption=image_caption,
+            user_query=user_query,
+            query_hist=query_hist  # Pass the query history
+        )
+
+        # Add the current query and BLIP response to the history
+        query_hist.append((user_query, blip_response))
+
+        # Display responses
+        print(f"blip_response : {blip_response}")
+        print(f"vqa_response : {vqa_response}")
+
+
+
 def main():
     """Will Import all the classes and functions from the other files and run the program"""
 
@@ -262,7 +311,8 @@ def main():
     audio_handler = audioHandler(pause_threshold=2.5)
     object_detector = objectDetector(device=DEVICE)
     llm = LLM(model_name=LLM_MODEL_NAME, temperature=LLM_TEMPERATURE)
-    # vlm = imageCaption()
+    vlm = imageCaption()
+    image_vqa = imageVqa()
 
     ## Initialize the deque to store the data, 
     ## Maxlen is set to 30, so that only the last 30 seconds data is stored.
@@ -281,17 +331,21 @@ def main():
     data_update_thread.start()
 
     ## Run the navigation mode
-    navigation_mode(llm, yolo_output_data, llm_response_data, audio_handler)
+    # navigation_mode(llm, yolo_output_data, llm_response_data)
 
     ## Run the Scene Description
-    # description = scenic_description(camera, vlm)
-    # print(description)
+    description = scenic_description(camera, vlm)
+    print(description)
+
+
+    interactive_vqa(image_vqa, llm, camera, description)
 
     stop_event.set()
     data_update_thread.join()
     cv2.destroyAllWindows
     if not WORKING_WITH_LOCAL_DATA:
         camera.stop()
+    
 
 if __name__ == "__main__":
     main()

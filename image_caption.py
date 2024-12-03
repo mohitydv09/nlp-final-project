@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     ## Get the image from the camera
     camera_input = cameraInput()
-    rgb_frame = camera_input.get_rgb_frame()
+    rgb_frame = camera_input.get_color_frame()
 
     ## Get the image caption
     image_caption = imageCaption()

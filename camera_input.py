@@ -22,7 +22,7 @@ class cameraInput:
         """Generator that yields RGB frames each time it is called.
             Example usage:
             while i_want_to_detect_objects:
-                frame = camera_input.get_rgb_frame()
+                frame = camera_input.get_color_frame()
                 yolo_result = yolo_model.detect(frame)
             """
         color_frame = self.color_frames[self.idx,:,:]
@@ -33,7 +33,7 @@ class cameraInput:
         """Generator that yields RGBD frames each time it is called.
             Example usage:
             while i_want_to_detect_objects:
-                frame = camera_input.get_rgb_frame()
+                frame = camera_input.get_color_frame()
                 yolo_result = yolo_model.detect(frame)
             """
         depth_frame = self.depth_frames[self.idx,:,:]
@@ -43,5 +43,5 @@ class cameraInput:
 if __name__ == "__main__":
     camera_input = cameraInput()  # Create an instance of the CameraInput class
     for i in range(500):
-        frame = camera_input.get_rgb_frame()
+        frame = camera_input.get_color_frame()
         print(frame[0,0,0])
