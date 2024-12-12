@@ -6,9 +6,13 @@
 [paper](https://www.overleaf.com/project/65b17a76caac86c24bbaae5d), [project page](https://mohitydv09.github.io/nlpfinalprojectwebsite/)
 
 ## Demos:
+<p align="center">
 [![Sample Run 1](https://img.youtube.com/vi/bQnBfadSGAU/0.jpg)](https://www.youtube.com/watch?v=bQnBfadSGAU)
+</p>
 
+<p align="center">
 [![Sample Run 2](https://img.youtube.com/vi/WyWYLxGRPOc/0.jpg)](https://www.youtube.com/watch?v=WyWYLxGRPOcU)
+</p>
 
 # Running the code
 ## Downloading all the required files
