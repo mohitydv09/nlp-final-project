@@ -3,7 +3,12 @@
 ### Group Name: Sentimantals
 #### Members: Mohit Yadav, Alex Besch, Abbas Boosherain, Ruolei Zeng
 
+[paper](https://www.overleaf.com/project/65b17a76caac86c24bbaae5d), [project page](https://mohitydv09.github.io/nlpfinalprojectwebsite/)
 
+## Demos:
+[![Sample Run 1](https://img.youtube.com/vi/bQnBfadSGAU/0.jpg)](https://www.youtube.com/watch?v=bQnBfadSGAU)
+
+[![Sample Run 2](https://img.youtube.com/vi/WyWYLxGRPOc/0.jpg)](https://www.youtube.com/watch?v=WyWYLxGRPOcU)
 
 # Running the code
 ## Downloading all the required files
@@ -52,7 +57,3 @@ MODE = "NAV"
 ## Motivation:
 This project seeks to address challenges faced by visually impaired individuals by providing real-time, contextually relevant scene descriptions that enable better spatial awareness and navigation. Leveraging advancements in Vision and Language Models (VLMs), our goal is to develop a system that translates visual information into accessible language, prioritizing functional details within the user's immediate surroundings. This real-time scene description system will provide users with audible updates on important elements within their environment, such as nearby people or obstacles, supporting safer and more confident navigation.
 
-## Sample Runs:
-[![Sample Run 1](https://img.youtube.com/vi/bQnBfadSGAU/0.jpg)](https://www.youtube.com/watch?v=bQnBfadSGAU)
-
-[![Sample Run 2](https://img.youtube.com/vi/WyWYLxGRPOc/0.jpg)](https://www.youtube.com/watch?v=WyWYLxGRPOcU)
