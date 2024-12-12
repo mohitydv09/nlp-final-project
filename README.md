@@ -3,6 +3,43 @@
 ### Group Name: Sentimantals
 #### Members: Mohit Yadav, Alex Besch, Abbas Boosherain, Ruolei Zeng
 
+
+
+# Running the code
+## Downloading all the required files
+In your working directory, ensure you have the following folders:
+- data
+    - fill the data with the folder located [here](https://drive.google.com/drive/folders/1V4nHudH28UQZuzTyz9ETtODgYE5Jx2lJ?usp=sharing) (you must be logged into a @umn.edu email).
+- models
+    - Additional models will download as necessary, such as yolov11n
+
+## Preparing your environment
+Create the conda env
+```
+conda env create -f environment.yml
+```
+## Setting parameters
+The following variables will control how the code funcitons
+```
+LLM_MODEL_NAME = 'gpt-4o-mini' # Choose any chagpt model
+LLM_TEMPERATURE = 0.0 ## Deterministic
+WORKING_WITH_LOCAL_DATA = True 
+    # True - Uses local data in ./data folder
+    # False - Requires Intel RealSense camera be connected
+LOCAL_DATA_FILE_PATH = "data/keller_study.npz" ## Choose any file within ./data/ folder
+
+DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
+    # CPU for computer without Nvidia GPU
+    # cuda:0 for computer with Nvidia GPU
+MODE = "NAV" ## "VQA" "NAV" or "SD"
+    # NAV - Navigation assistance
+    # VQA - Visual Question Answering
+    # SD - Scene Descriptions
+```
+
+
+
+
 ## Introduction and Motivation:
 This project seeks to address challenges faced by visually impaired individuals by providing real-time, contextually relevant scene descriptions that enable better spatial awareness and navigation. Leveraging advancements in Vision and Language Models (VLMs), our goal is to develop a system that translates visual information into accessible language, prioritizing functional details within the user's immediate surroundings. This real-time scene description system will provide users with audible updates on important elements within their environment, such as nearby people or obstacles, supporting safer and more confident navigation.
 
@@ -34,19 +71,5 @@ VLM Output:
 
 **Conditional caption:** _a photography of_ a man standing in a room with a whiteboard
 
-
-# Running the code
-## Downloading all the required files
-In your working directory, ensure you have the following folders:
-- data
-    - fill the data with the folder located [here](https://drive.google.com/drive/folders/1V4nHudH28UQZuzTyz9ETtODgYE5Jx2lJ?usp=sharing) (you must be logged into a @umn.edu email).
-- models
-    - Additional models will download as necessary, such as yolov11n
-
-## Preparing your environment
-Create the conda env
-```
-conda env create -f environment.yml
-```
 
 
