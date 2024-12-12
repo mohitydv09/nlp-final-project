@@ -37,7 +37,16 @@ VLM Output:
 
 # Running the code
 ## Downloading all the required files
+In your working directory, ensure you have the following folders:
+- data
+    - fill the data with the folder located [here](https://drive.google.com/drive/folders/1V4nHudH28UQZuzTyz9ETtODgYE5Jx2lJ?usp=sharing) (you must be logged into a @umn.edu email).
+- models
+    - Additional models will download as necessary, such as yolov11n
 
 ## Preparing your environment
+Create the conda env
+```
+conda env create -f environment.yml
+```
 
 
