@@ -1,6 +1,7 @@
 # Scene Descriptions for the Visually Impaired
 ## CSCI 5541 Natural Language Processing Final Project
 ### Group Name: Sentimantals
+#### Members: Mohit Yadav, Alex Besch, Abbas Boosherain, Ruolei Zeng
 
 ## Introduction and Motivation:
 This project seeks to address challenges faced by visually impaired individuals by providing real-time, contextually relevant scene descriptions that enable better spatial awareness and navigation. Leveraging advancements in Vision and Language Models (VLMs), our goal is to develop a system that translates visual information into accessible language, prioritizing functional details within the user's immediate surroundings. This real-time scene description system will provide users with audible updates on important elements within their environment, such as nearby people or obstacles, supporting safer and more confident navigation.
@@ -32,3 +33,11 @@ VLM Output:
 **Unconditional caption:** there is a man standing in a room with a whiteboard
 
 **Conditional caption:** _a photography of_ a man standing in a room with a whiteboard
+
+
+# Running the code
+## Downloading all the required files
+
+## Preparing your environment
+
+
