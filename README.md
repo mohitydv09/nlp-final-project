@@ -53,4 +53,4 @@ MODE = "NAV"
 This project seeks to address challenges faced by visually impaired individuals by providing real-time, contextually relevant scene descriptions that enable better spatial awareness and navigation. Leveraging advancements in Vision and Language Models (VLMs), our goal is to develop a system that translates visual information into accessible language, prioritizing functional details within the user's immediate surroundings. This real-time scene description system will provide users with audible updates on important elements within their environment, such as nearby people or obstacles, supporting safer and more confident navigation.
 
 ## Sample Run:
-[![YouTube Video](https://img.youtube.com/vi/<VIDEO_ID>/hqdefault.jpg)](https://www.youtube.com/watch?v=<bQnBfadSGAU>)
+[![Sample Run](https://img.youtube.com/vi/bQnBfadSGAU/0.jpg)](https://www.youtube.com/watch?v=bQnBfadSGAU)
