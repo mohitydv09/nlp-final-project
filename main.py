@@ -14,6 +14,20 @@ from object_detector import ObjectDetector
 from image_caption import ImageCaption
 from image_vqa import ImageVQA
 
+LLM_MODEL_NAME = 'gpt-4o-mini'
+LLM_TEMPERATURE = 0.0 ## Deterministic
+WORKING_WITH_LOCAL_DATA = True
+LOCAL_DATA_FILE_PATH = "data/keller_study_chair.npz"
+
+DEVICE = 'cuda' ## 'cpu' or 'cuda'
+
+MODE = "NAV" ## "VQA" "NAV" or "SD"
+
+DEQUE_MAX_LENGTH = 15
+RESPONSE_DEQUE_LENGTH = 5
+DEQUE_UPDATE_FREQEUNCY = 1 ## In seconds
+LLM_RESPONSE_FREQUENCY = 5 ## In seconds
+
 ## Global Variables
 ## Location Cutoffs
 THETA_1 = 80
@@ -21,19 +35,6 @@ THETA_2 = 70
 R_1 = 2
 R_2 = 5
 CLOSE_X_CUTOFF = 0.7
-
-DEQUE_MAX_LENGTH = 15
-RESPONSE_DEQUE_LENGTH = 5
-DEQUE_UPDATE_FREQEUNCY = 1 ## In seconds
-LLM_RESPONSE_FREQUENCY = 5 ## In seconds
-
-LLM_MODEL_NAME = 'gpt-4o-mini'
-LLM_TEMPERATURE = 0.0 ## Deterministic
-WORKING_WITH_LOCAL_DATA = True
-LOCAL_DATA_FILE_PATH = "data/keller_study.npz"
-
-DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
-MODE = "NAV" ## "VQA" "NAV" or "SD"
 
 stop_event = threading.Event()
 
@@ -140,14 +141,8 @@ def get_llm_response(llm : LLM, yolo_output_data: deque[Tuple], llm_response_dat
     ## Cast data as a list.
     yolo_output_list = list(yolo_output_data)
 
-    ## This is for Making the data in human readable format.
-    # structured_data = structure_yolo_output(yolo_output_list)
-    # print(structured_data)
-
     ## Get the JSON data and save it to a file.
     json_data = structure_yolo_output_json(yolo_output_list)
-    # with open("./utils/yolo_output_trial.json", "w") as f:
-    #     json.dump(json_data, f, indent=4)
 
     ## Make the System Message:
     system_message = ""
@@ -210,20 +205,31 @@ def update_deque(camera: RealSenseCamera,
                     cv2.putText(rgb_frame, f"({X}, {Y}, {Z})", (int(x), int(y+20)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA)
                 cv2.circle(rgb_frame, (int(x), int(y)), 5, (0, 0, 255), -1)
             last_llm_response = llm_response_data[0] if llm_response_data else "No Response Yet"
-            black_bottom = np.zeros((100, rgb_frame.shape[1], 3), dtype=np.uint8)
+            black_bottom = np.zeros((100, rgb_frame.shape[1], 3), np.uint8)
+
             llm_response_list = last_llm_response.split(" ")
-            first_line = "LLM Response: " + " ".join(llm_response_list[:8])
-            second_line = " ".join(llm_response_list[8:18])
-            third_line = " ".join(llm_response_list[18:])
-            cv2.putText(black_bottom, first_line, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            cv2.putText(black_bottom, second_line, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            cv2.putText(black_bottom, third_line, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            # cv2.putText(black_bottom, f"LLM Response: {last_llm_response}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            i = 0
+            sentence = "LLM Response: "
+            while i < len(llm_response_list) and len(sentence) < 50:
+                sentence += llm_response_list[i] + " "
+                i += 1
+            cv2.putText(black_bottom, sentence, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            sentence = ""
+            while i < len(llm_response_list) and len(sentence) < 50:
+                sentence += llm_response_list[i] + " "
+                i += 1
+            cv2.putText(black_bottom, sentence, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            sentence = ""
+            while i < len(llm_response_list) and len(sentence) < 50:
+                sentence += llm_response_list[i] + " "
+                i += 1
+            cv2.putText(black_bottom, sentence, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
             rgb_frame = np.vstack((rgb_frame, black_bottom))
             cv2.imshow("RGB Image", rgb_frame)
             try: ## If running from local file then wait for 35ms, else wait for 1ms.
                 if camera.idx:
-                    cv2.waitKey(50)
+                    cv2.waitKey(35)
             except:
                 cv2.waitKey(1)
 
@@ -244,7 +250,7 @@ def navigation_mode(llm: LLM, yolo_output_data: deque[Tuple], llm_response_data:
             ## Get the LLM response
             start_time = time.time()
             llm_response = get_llm_response(llm, yolo_output_data, llm_response_data, audio_handler)
-            print(llm_response)
+            print("LLM Response: ", llm_response)
             time.sleep(max(0, LLM_RESPONSE_FREQUENCY - (time.time() - start_time)))
     except KeyboardInterrupt:
         return
@@ -342,6 +348,5 @@ def main():
     if not WORKING_WITH_LOCAL_DATA:
         camera.stop()
     
-
 if __name__ == "__main__":
     main()

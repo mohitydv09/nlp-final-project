@@ -3,60 +3,69 @@
 ### Group Name: Sentimantals
 #### Members: Mohit Yadav, Alex Besch, Abbas Booshehrain, Ruolei Zeng
 
-[paper](https://www.overleaf.com/project/65b17a76caac86c24bbaae5d), [project page](https://mohitydv09.github.io/nlpfinalprojectwebsite/)
+For summary or our work please visit our Project WebPage [here](https://mohitydv09.github.io/nlpfinalprojectwebsite/).
 
-## Demos:
+For detailed analysis and methodology of our work, see the project final report [here](https://mohitydv09.github.io/nlpfinalprojectwebsite/static/pdfs/report.pdf).
 
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=bQnBfadSGAU">
-    <img src="https://img.youtube.com/vi/bQnBfadSGAU/0.jpg" alt="Sample Run 1">
-  </a>
-  <br>
-  <a href="https://www.youtube.com/watch?v=WyWYLxGRPOcU">
-    <img src="https://img.youtube.com/vi/WyWYLxGRPOc/0.jpg" alt="Sample Run 2">
-  </a>
-</div>
+## Demo Output from our Method:
 
+## Installaton
 
-# Running the code
-## Downloading all the required files
-In your working directory, ensure you have the following folders:
-- data
-    - fill the data with the folder located [here](https://drive.google.com/drive/folders/1V4nHudH28UQZuzTyz9ETtODgYE5Jx2lJ?usp=sharing) (you must be logged into a @umn.edu email).
-- models
-    - Additional models will download as necessary, such as yolov11n
+This code was tested with Python 3.12.
 
-## Preparing your environment
-Create the conda env
+Clone this repo in your machine by running the following command in terminal:
+
+```shell
+git clone https://github.com/mohitydv09/nlp-final-project.git
+cd nlp-final-project
 ```
+
+Create the conda env
+```shell
 conda env create -f environment.yml
 ```
 
-Ensure your openai key is stored to your environment by typing the following into terminal:
-```
-export OPENAI_API_KEY="{OPENAI API KEY}"
+This repo uses OpenAI's ChatGPT for inference and hence OpenAI API Key is required to be stored as evn variable `OPENAI_API_KEY`.
+
+This can be done via following command:
+```shell
+export OPENAI_API_KEY="YOUR OPENAI API KEY"
 ```
 
-## Setting parameters
-The following variables will control how the code funcitons. Open the file `main.py` and adjust the following parameters on lines 30-36
+Check the correct setting of the evn variable by running:
+```shell
+echo $OPENAI_API_KEY
+```
+
+### Downloading sample data to run the code without Depth Camera
+
+Download the test data from [here](https://drive.google.com/drive/folders/1V4nHudH28UQZuzTyz9ETtODgYE5Jx2lJ?usp=share_link) and copy it into the `data/` folder.
+
+Note: The code will automatically download the object detection model and the Vision Language model locally.
+
+
+## Setting Parameters
+The following variables control how the code fuctions. Open the file `main.py` and adjust accordingly:
 
 ```shell
-LLM_MODEL_NAME = 'gpt-4o-mini' 
-    # Choose any chagpt model
+## Choose the OpenAI's LLM Model to be used
+LLM_MODEL_NAME = 'gpt-4o-mini'
 
+## Set Model Temperature
 LLM_TEMPERATURE = 0.0 ## Deterministic
 
+## Set the data input stream
 WORKING_WITH_LOCAL_DATA = True 
     # True - Uses local data in ./data folder
-    # False - Requires Intel RealSense camera be connected
+    # False - Requires Intel RealSense camera to be connected
 
+## Choose the recoreded data file to run from the downloaded data.
 LOCAL_DATA_FILE_PATH = "data/keller_study.npz" 
-    # Choose any file within ./data/ folder
 
-DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
-    # CPU for computer without Nvidia GPU
-    # cuda:0 for computer with Nvidia GPU
+## Set device
+DEVICE = 'cuda' ## 'cpu' or 'cuda'
 
+## Select the Mode of the Product.
 MODE = "NAV" 
     # NAV - Navigation assistance
     # VQA - Visual Question Answering
@@ -77,57 +86,14 @@ python3 main.py
 ## Troubleshooting
 OpenCV only can be run in the main thread in MacOS. This limitation means the code will run, but the user cannot see the camera output on MacOS.
 
-## Motivation:
-This project seeks to address challenges faced by visually impaired individuals by providing real-time, contextually relevant scene descriptions that enable better spatial awareness and navigation. Leveraging advancements in Vision and Language Models (VLMs), our goal is to develop a system that translates visual information into accessible language, prioritizing functional details within the user's immediate surroundings. This real-time scene description system will provide users with audible updates on important elements within their environment, such as nearby people or obstacles, supporting safer and more confident navigation.
+## Acknowledgements
 
-# Acknowldgements 
-We would like to extend our sincere gratitude to the following individuals for their support:
-- Dr. Karthik, for generously allowing us to utilize his laboratory facilities, providing us with a conducive environment to conduct our research.
-- Grant Besch, for granting us access to his computer resources, which significantly facilitated our project's computational requirements.
+This project uses several open-source repositories:
 
-Their contributions have been invaluable to our project, and we appreciate their kindness and willingness to support our endeavors.
+- Jocher, G., Qiu, J., & Chaurasia, A. (2023). Ultralytics YOLO (Version 8.0.0) [Computer software]. https://github.com/ultralytics/ultralytics
 
-# References
-```
-@misc{li2022blipbootstrappinglanguageimagepretraining,
-      title={BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation}, 
-      author={Junnan Li and Dongxu Li and Caiming Xiong and Steven Hoi},
-      year={2022},
-      eprint={2201.12086},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2201.12086}, 
-}
+- Wolf, T., Debut, L., Sanh, V., Chaumond, J., Delangue, C., Moi, A., Cistac, P., Ma, C., Jernite, Y., Plu, J., Xu, C., Le Scao, T., Gugger, S., Drame, M., Lhoest, Q., & Rush, A. M. (2020). Transformers: State-of-the-Art Natural Language Processing [Conference paper]. 38–45. https://www.aclweb.org/anthology/2020.emnlp-demos.6
 
-@misc{intelrealsense,
-  author = {Intel Corporation},
-  title = {Intel RealSense SDK},
-  year = {2022},
-  howpublished = {\url{https://www.intelrealsense.com/developers/}}
-}
+- Intel Corporation. (2024). *librealsense* (Version 2.55.1). GitHub. https://github.com/IntelRealSense/librealsense
 
-@misc{openai_chatgpt_2024,
-    author = {OpenAI},
-    title = {ChatGPT-4},
-    year = {2024},
-    howpublished = {\url{https://openai.com}},
-    note = {Accessed: 2024-12-05}
-}
-
-@misc{yolo_creation,
-      title={You Only Look Once: Unified, Real-Time Object Detection}, 
-      author={Joseph Redmon and Santosh Divvala and Ross Girshick and Ali Farhadi},
-      year={2016},
-      eprint={1506.02640},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/1506.02640}, 
-}
-
-@article{opencv,
-  title={The OpenCV Library},
-  author={Gary Bradski},
-  journal={Dr. Dobb's Journal of Software Tools},
-  year={2000}
-}
-```
+- Chase, H. (2022). LangChain [Computer software]. https://github.com/langchain-ai/langchain
