@@ -29,9 +29,9 @@ LLM_RESPONSE_FREQUENCY = 5 ## In seconds
 
 LLM_MODEL_NAME = 'gpt-4o-mini'
 LLM_TEMPERATURE = 0.5
-WORKING_WITH_LOCAL_DATA = True
+WORKING_WITH_LOCAL_DATA = False
 
-DEVICE = 'cuda:0' ## 'cpu' or 'cuda:0'
+DEVICE = 'cpu' ## 'cpu' or 'cuda:0'
 stop_event = threading.Event()
 
 def scenic_description(camera: RealSenseCamera, vlm: imageCaption) -> str:
@@ -243,8 +243,17 @@ def interactive_vqa(image_vqa, llm, camera, image_caption):
     # Initialize query history
     query_hist = []
 
-    # Get the RGB frame from the camera
-    rgb_frame = camera.get_color_frame()
+    ## Code block to check each frame
+    # for i in range(500):
+    #     # Get the RGB frame from the camera
+    #     camera.get_color_frame()
+    #     if i == 400:
+    #         rgb_frame = camera.get_color_frame()    
+    #         cv2.imshow("rgb_frame", rgb_frame)
+    #         cv2.waitKey(1)
+
+    # file_path = "./data/rgb_frame.jpg"  # Specify the file name and format
+    # cv2.imwrite(file_path, rgb_frame)
 
     while True:
         # Prompt the user for a query
@@ -257,7 +266,7 @@ def interactive_vqa(image_vqa, llm, camera, image_caption):
         # Process the query using BLIP
         start_time = time.time()
         blip_response = image_vqa.get_query_response(rgb_frame, user_query)
-        print(f"Time taken for query response: {time.time() - start_time}")
+        # print(f"Time taken for query response: {time.time() - start_time}")
 
         # Generate response using LLM, including the history of queries and responses
         vqa_response = image_vqa.vqa_llm_response(
@@ -272,7 +281,7 @@ def interactive_vqa(image_vqa, llm, camera, image_caption):
         query_hist.append((user_query, blip_response))
 
         # Display responses
-        print(f"blip_response : {blip_response}")
+        # print(f"blip_response : {blip_response}")
         print(f"vqa_response : {vqa_response}")
 
 
@@ -306,7 +315,7 @@ def main():
                                                 object_detector, 
                                                 yolo_output_data, 
                                                 DEQUE_UPDATE_FREQEUNCY,     ## Update Frequency
-                                                True),                     ## Visualization
+                                                False),                     ## Visualization
                                           daemon=True) ## As daemon is True, you need to clear the resources before exiting the program.
     data_update_thread.start()
 
@@ -317,6 +326,10 @@ def main():
     description = scenic_description(camera, vlm)
     print(description)
 
+    ## To access yolo_output raw
+    # time.sleep(10)
+    # yolo_output = list(yolo_output_data)[0]
+    # print(yolo_output)
 
     interactive_vqa(image_vqa, llm, camera, description)
 

@@ -1,3 +1,5 @@
+import os
+from gtts import gTTS
 import speech_recognition as sr
 
 def live_speech_to_text():
